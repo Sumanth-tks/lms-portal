@@ -211,6 +211,32 @@ const submitAttemptSchema = z.object({
   })),
 });
 
+const linkRepoSchema = z.object({
+  repoUrl: z.string().url('Valid URL required'),
+  repoName: z.string().min(1, 'Repo name required'),
+  internId: z.string().min(1).optional(),
+});
+
+const addCommitSchema = z.object({
+  githubLinkId: z.string().min(1),
+  commitHash: z.string().min(1),
+  message: z.string().min(1),
+  filesChanged: z.number().int().optional(),
+  additions: z.number().int().optional(),
+  deletions: z.number().int().optional(),
+  date: z.string().min(1),
+});
+
+const createReviewSchema = z.object({
+  commitLogId: z.string().min(1),
+  commentsJson: z.any().optional(),
+});
+
+const executeCodeSchema = z.object({
+  language: z.enum(['python', 'sql']),
+  code: z.string().min(1, 'Code required'),
+});
+
 module.exports = {
   loginSchema,
   changePasswordSchema,
@@ -237,4 +263,8 @@ module.exports = {
   updateQuizSchema,
   addQuestionSchema,
   submitAttemptSchema,
+  linkRepoSchema,
+  addCommitSchema,
+  createReviewSchema,
+  executeCodeSchema,
 };

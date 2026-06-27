@@ -197,6 +197,45 @@ export interface QuizAttempt {
   intern?: { id: string; name: string; email: string };
 }
 
+export type CodeReviewStatus = 'PENDING' | 'REVIEWED';
+
+export interface GitHubLink {
+  id: string;
+  internId: string;
+  repoUrl: string;
+  repoName: string;
+  linkedAt: string;
+  intern?: { id: string; name: string; email: string };
+  _count?: { commits: number };
+}
+
+export interface CommitLog {
+  id: string;
+  internId: string;
+  githubLinkId: string;
+  commitHash: string;
+  message: string;
+  filesChanged: number;
+  additions: number;
+  deletions: number;
+  date: string;
+  intern?: { id: string; name: string };
+  githubLink?: { id: string; repoName: string; repoUrl: string };
+  _count?: { reviews: number };
+}
+
+export interface CodeReview {
+  id: string;
+  commitLogId: string;
+  reviewerId: string;
+  commentsJson: { line?: number; file?: string; comment: string }[];
+  status: CodeReviewStatus;
+  reviewedAt: string | null;
+  createdAt: string;
+  reviewer?: { id: string; name: string };
+  commitLog?: { id: string; commitHash: string; message: string; intern?: { id: string; name: string } };
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T;

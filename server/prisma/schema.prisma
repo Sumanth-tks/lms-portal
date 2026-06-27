@@ -94,6 +94,10 @@ model User {
   createdQuizzes     Quiz[]         @relation("QuizCreator")
   quizAttempts       QuizAttempt[]  @relation("InternQuizAttempts")
 
+  githubLinks        GitHubLink[]   @relation("InternGitHubLinks")
+  commits            CommitLog[]    @relation("InternCommits")
+  codeReviews        CodeReview[]   @relation("CodeReviewer")
+
   @@map("users")
 }
 
@@ -498,6 +502,61 @@ model QuizAttempt {
   intern        User     @relation("InternQuizAttempts", fields: [internId], references: [id])
 
   @@map("quiz_attempts")
+}
+
+// ─── GitHub & Code ───────────────────────────────────
+
+enum CodeReviewStatus {
+  PENDING
+  REVIEWED
+}
+
+model GitHubLink {
+  id         String   @id @default(uuid())
+  internId   String   @map("intern_id")
+  repoUrl    String   @map("repo_url")
+  repoName   String   @map("repo_name")
+  linkedAt   DateTime @default(now()) @map("linked_at")
+
+  intern     User     @relation("InternGitHubLinks", fields: [internId], references: [id])
+  commits    CommitLog[]
+
+  @@unique([internId, repoUrl])
+  @@map("github_links")
+}
+
+model CommitLog {
+  id             String   @id @default(uuid())
+  internId       String   @map("intern_id")
+  githubLinkId   String   @map("github_link_id")
+  commitHash     String   @map("commit_hash")
+  message        String
+  filesChanged   Int      @default(0) @map("files_changed")
+  additions      Int      @default(0)
+  deletions      Int      @default(0)
+  date           DateTime
+
+  intern         User       @relation("InternCommits", fields: [internId], references: [id])
+  githubLink     GitHubLink @relation(fields: [githubLinkId], references: [id], onDelete: Cascade)
+  reviews        CodeReview[]
+
+  @@unique([githubLinkId, commitHash])
+  @@map("commit_logs")
+}
+
+model CodeReview {
+  id            String           @id @default(uuid())
+  commitLogId   String           @map("commit_log_id")
+  reviewerId    String           @map("reviewer_id")
+  commentsJson  Json?            @map("comments_json")
+  status        CodeReviewStatus @default(PENDING)
+  reviewedAt    DateTime?        @map("reviewed_at")
+  createdAt     DateTime         @default(now()) @map("created_at")
+
+  commitLog     CommitLog @relation(fields: [commitLogId], references: [id], onDelete: Cascade)
+  reviewer      User      @relation("CodeReviewer", fields: [reviewerId], references: [id])
+
+  @@map("code_reviews")
 }
 
 // ─── Notifications ───────────────────────────────────
