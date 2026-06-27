@@ -21,6 +21,8 @@ import {
   GitBranch,
   Code,
   Briefcase,
+  Trophy,
+  Rocket,
 } from 'lucide-react';
 
 const menuItems = {
@@ -37,6 +39,8 @@ const menuItems = {
     { href: '/github', label: 'GitHub', icon: GitBranch },
     { href: '/playground', label: 'Playground', icon: Code },
     { href: '/portfolio', label: 'Portfolio', icon: Briefcase },
+    { href: '/hackathons', label: 'Hackathons', icon: Trophy },
+    { href: '/capstone', label: 'Capstone', icon: Rocket },
     { href: '/calendar', label: 'Calendar', icon: Calendar },
     { href: '/access', label: 'Access Control', icon: Lock },
     { href: '/discord', label: 'Discord', icon: MessageCircle },
@@ -53,6 +57,8 @@ const menuItems = {
     { href: '/github', label: 'GitHub', icon: GitBranch },
     { href: '/playground', label: 'Playground', icon: Code },
     { href: '/portfolio', label: 'Portfolio', icon: Briefcase },
+    { href: '/hackathons', label: 'Hackathons', icon: Trophy },
+    { href: '/capstone', label: 'Capstone', icon: Rocket },
     { href: '/calendar', label: 'Calendar', icon: Calendar },
     { href: '/access', label: 'Access Control', icon: Lock },
     { href: '/discord', label: 'Discord', icon: MessageCircle },
@@ -68,6 +74,8 @@ const menuItems = {
     { href: '/github', label: 'GitHub', icon: GitBranch },
     { href: '/playground', label: 'Playground', icon: Code },
     { href: '/portfolio', label: 'Portfolio', icon: Briefcase },
+    { href: '/hackathons', label: 'Hackathons', icon: Trophy },
+    { href: '/capstone', label: 'Capstone', icon: Rocket },
     { href: '/calendar', label: 'Calendar', icon: Calendar },
     { href: '/discord', label: 'Discord', icon: MessageCircle },
   ],

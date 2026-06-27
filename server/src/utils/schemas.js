@@ -232,6 +232,58 @@ const createReviewSchema = z.object({
   commentsJson: z.any().optional(),
 });
 
+const createHackathonSchema = z.object({
+  title: z.string().min(1, 'Title required'),
+  description: z.string().optional(),
+  dayNumber: z.number().int().min(1),
+  startTime: z.string().min(1),
+  endTime: z.string().min(1),
+  rubricJson: z.any().optional(),
+  maxScore: z.number().int().min(1),
+  isTeam: z.boolean().optional(),
+  batchId: z.string().min(1).optional(),
+});
+
+const updateHackathonSchema = z.object({
+  title: z.string().min(1).optional(),
+  description: z.string().optional(),
+  dayNumber: z.number().int().min(1).optional(),
+  startTime: z.string().optional(),
+  endTime: z.string().optional(),
+  rubricJson: z.any().optional(),
+  maxScore: z.number().int().min(1).optional(),
+  isTeam: z.boolean().optional(),
+});
+
+const submitHackathonSchema = z.object({
+  repoUrl: z.string().url().optional(),
+  demoUrl: z.string().url().optional(),
+});
+
+const judgeHackathonSchema = z.object({
+  score: z.number().min(0),
+  feedback: z.string().optional(),
+});
+
+const createCapstoneSchema = z.object({
+  internId: z.string().min(1).optional(),
+  mentorId: z.string().min(1).optional(),
+  problemStatement: z.string().optional(),
+  repoUrl: z.string().url().optional(),
+});
+
+const updateCapstoneSchema = z.object({
+  problemStatement: z.string().optional(),
+  phase: z.enum(['STATEMENT', 'SOLUTION', 'DEPLOYMENT', 'DOCUMENTATION', 'PRESENTATION', 'EVALUATION']).optional(),
+  repoUrl: z.string().url().optional().or(z.literal('')),
+  deployedUrl: z.string().url().optional().or(z.literal('')),
+});
+
+const evaluateCapstoneSchema = z.object({
+  finalScore: z.number().min(0),
+  feedbackJson: z.any().optional(),
+});
+
 const executeCodeSchema = z.object({
   language: z.enum(['python', 'sql']),
   code: z.string().min(1, 'Code required'),
@@ -267,4 +319,11 @@ module.exports = {
   addCommitSchema,
   createReviewSchema,
   executeCodeSchema,
+  createHackathonSchema,
+  updateHackathonSchema,
+  submitHackathonSchema,
+  judgeHackathonSchema,
+  createCapstoneSchema,
+  updateCapstoneSchema,
+  evaluateCapstoneSchema,
 };

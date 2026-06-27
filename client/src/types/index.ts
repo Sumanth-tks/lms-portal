@@ -236,6 +236,54 @@ export interface CodeReview {
   commitLog?: { id: string; commitHash: string; message: string; intern?: { id: string; name: string } };
 }
 
+export type CapstonePhase = 'STATEMENT' | 'SOLUTION' | 'DEPLOYMENT' | 'DOCUMENTATION' | 'PRESENTATION' | 'EVALUATION';
+
+export interface Hackathon {
+  id: string;
+  title: string;
+  description: string | null;
+  dayNumber: number;
+  startTime: string;
+  endTime: string;
+  rubricJson: unknown;
+  maxScore: number;
+  isTeam: boolean;
+  batchId: string | null;
+  createdAt: string;
+  batch?: { id: string; name: string };
+  submissions?: HackathonSubmission[];
+  _count?: { submissions: number };
+}
+
+export interface HackathonSubmission {
+  id: string;
+  hackathonId: string;
+  internId: string;
+  repoUrl: string | null;
+  demoUrl: string | null;
+  submittedAt: string;
+  score: number | null;
+  feedback: string | null;
+  judgedBy: string | null;
+  intern?: { id: string; name: string; email: string };
+  judge?: { id: string; name: string };
+}
+
+export interface CapstoneProject {
+  id: string;
+  internId: string;
+  mentorId: string | null;
+  problemStatement: string | null;
+  phase: CapstonePhase;
+  repoUrl: string | null;
+  deployedUrl: string | null;
+  finalScore: number | null;
+  feedbackJson: unknown;
+  createdAt: string;
+  intern?: { id: string; name: string; email: string };
+  mentor?: { id: string; name: string };
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T;

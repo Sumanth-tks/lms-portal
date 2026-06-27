@@ -17,6 +17,8 @@ const dailyTaskRoutes = require('./routes/dailyTaskRoutes');
 const assignmentRoutes = require('./routes/assignmentRoutes');
 const quizRoutes = require('./routes/quizRoutes');
 const githubRoutes = require('./routes/githubRoutes');
+const hackathonRoutes = require('./routes/hackathonRoutes');
+const capstoneRoutes = require('./routes/capstoneRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -56,6 +58,8 @@ app.use('/api/daily-tasks', dailyTaskRoutes);
 app.use('/api/assignments', assignmentRoutes);
 app.use('/api/quizzes', quizRoutes);
 app.use('/api/github', githubRoutes);
+app.use('/api/hackathons', hackathonRoutes);
+app.use('/api/capstones', capstoneRoutes);
 
 app.use('/uploads', require('express').static(require('path').join(__dirname, '../uploads')));
 

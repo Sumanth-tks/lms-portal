@@ -98,6 +98,12 @@ model User {
   commits            CommitLog[]    @relation("InternCommits")
   codeReviews        CodeReview[]   @relation("CodeReviewer")
 
+  createdHackathons      Hackathon[]            @relation("HackathonCreator")
+  hackathonSubmissions   HackathonSubmission[]  @relation("InternHackathonSubmissions")
+  judgedHackathons       HackathonSubmission[]  @relation("HackathonJudge")
+  capstoneProject        CapstoneProject?       @relation("InternCapstone")
+  mentoredCapstones      CapstoneProject[]      @relation("CapstoneMentor")
+
   @@map("users")
 }
 
@@ -121,7 +127,8 @@ model Batch {
   status    BatchStatus @default(ACTIVE)
   createdAt DateTime    @default(now()) @map("created_at")
 
-  users     User[]
+  users       User[]
+  hackathons  Hackathon[]
 
   @@map("batches")
 }
@@ -557,6 +564,78 @@ model CodeReview {
   reviewer      User      @relation("CodeReviewer", fields: [reviewerId], references: [id])
 
   @@map("code_reviews")
+}
+
+// ─── Hackathons & Capstone ────────────────────────────
+
+enum CapstonePhase {
+  STATEMENT
+  SOLUTION
+  DEPLOYMENT
+  DOCUMENTATION
+  PRESENTATION
+  EVALUATION
+}
+
+model Hackathon {
+  id              String   @id @default(uuid())
+  title           String
+  description     String?
+  dayNumber       Int      @map("day_number")
+  startTime       DateTime @map("start_time")
+  endTime         DateTime @map("end_time")
+  rubricJson      Json?    @map("rubric_json")
+  maxScore        Int      @map("max_score")
+  isTeam          Boolean  @default(false) @map("is_team")
+  batchId         String?  @map("batch_id")
+  createdBy       String   @map("created_by")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  batch           Batch?   @relation(fields: [batchId], references: [id])
+  creator         User     @relation("HackathonCreator", fields: [createdBy], references: [id])
+  submissions     HackathonSubmission[]
+
+  @@map("hackathons")
+}
+
+model HackathonSubmission {
+  id            String    @id @default(uuid())
+  hackathonId   String    @map("hackathon_id")
+  internId      String    @map("intern_id")
+  repoUrl       String?   @map("repo_url")
+  demoUrl       String?   @map("demo_url")
+  submittedAt   DateTime  @default(now()) @map("submitted_at")
+  score         Float?
+  feedback      String?
+  judgedBy      String?   @map("judged_by")
+
+  hackathon     Hackathon @relation(fields: [hackathonId], references: [id], onDelete: Cascade)
+  intern        User      @relation("InternHackathonSubmissions", fields: [internId], references: [id])
+  judge         User?     @relation("HackathonJudge", fields: [judgedBy], references: [id])
+
+  @@unique([hackathonId, internId])
+  @@map("hackathon_submissions")
+}
+
+model CapstoneProject {
+  id               String        @id @default(uuid())
+  internId         String        @map("intern_id")
+  mentorId         String?       @map("mentor_id")
+  problemStatement String?       @map("problem_statement")
+  phase            CapstonePhase @default(STATEMENT)
+  repoUrl          String?       @map("repo_url")
+  deployedUrl      String?       @map("deployed_url")
+  finalScore       Float?        @map("final_score")
+  feedbackJson     Json?         @map("feedback_json")
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @updatedAt @map("updated_at")
+
+  intern           User          @relation("InternCapstone", fields: [internId], references: [id])
+  mentor           User?         @relation("CapstoneMentor", fields: [mentorId], references: [id])
+
+  @@unique([internId])
+  @@map("capstone_projects")
 }
 
 // ─── Notifications ───────────────────────────────────
