@@ -289,6 +289,24 @@ const executeCodeSchema = z.object({
   code: z.string().min(1, 'Code required'),
 });
 
+const awardBadgeSchema = z.object({
+  internId: z.string().min(1, 'Intern required'),
+  badgeId: z.string().min(1, 'Badge required'),
+});
+
+const addXpSchema = z.object({
+  internId: z.string().min(1, 'Intern required'),
+  amount: z.number().int().min(1),
+  reason: z.string().min(1, 'Reason required'),
+  sourceType: z.string().optional(),
+  sourceId: z.string().optional(),
+});
+
+const updateStreakSchema = z.object({
+  internId: z.string().min(1, 'Intern required'),
+  type: z.string().min(1, 'Type required'),
+});
+
 const createPeerReviewSchema = z.object({
   revieweeId: z.string().min(1, 'Reviewee required'),
   assignmentId: z.string().min(1).optional(),
@@ -355,6 +373,9 @@ module.exports = {
   createCapstoneSchema,
   updateCapstoneSchema,
   evaluateCapstoneSchema,
+  awardBadgeSchema,
+  addXpSchema,
+  updateStreakSchema,
   createPeerReviewSchema,
   generateReportSchema,
   mentorCommentSchema,

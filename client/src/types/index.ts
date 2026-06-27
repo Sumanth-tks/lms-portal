@@ -358,6 +358,52 @@ export interface ProgressStats {
   capstonePhase: CapstonePhase | null;
 }
 
+export interface Badge {
+  id: string;
+  name: string;
+  description: string;
+  iconUrl: string | null;
+  category: string;
+  criteria: string;
+  xpReward: number;
+}
+
+export interface EarnedBadge {
+  id: string;
+  internId: string;
+  badgeId: string;
+  earnedAt: string;
+  badge?: Badge;
+}
+
+export interface XpLog {
+  id: string;
+  internId: string;
+  amount: number;
+  reason: string;
+  sourceType: string;
+  sourceId: string | null;
+  createdAt: string;
+  intern?: { id: string; name: string };
+}
+
+export interface LeaderboardEntry {
+  rank: number;
+  intern: { id: string; name: string; email?: string; avatarUrl?: string | null };
+  totalXp: number;
+  badgeCount: number;
+  streak: number;
+}
+
+export interface StreakData {
+  id: string;
+  internId: string;
+  type: string;
+  currentCount: number;
+  longestCount: number;
+  lastActivityAt: string;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T;

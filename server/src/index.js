@@ -20,6 +20,7 @@ const githubRoutes = require('./routes/githubRoutes');
 const hackathonRoutes = require('./routes/hackathonRoutes');
 const capstoneRoutes = require('./routes/capstoneRoutes');
 const progressRoutes = require('./routes/progressRoutes');
+const gamificationRoutes = require('./routes/gamificationRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -62,6 +63,7 @@ app.use('/api/github', githubRoutes);
 app.use('/api/hackathons', hackathonRoutes);
 app.use('/api/capstones', capstoneRoutes);
 app.use('/api/progress', progressRoutes);
+app.use('/api/gamification', gamificationRoutes);
 
 app.use('/uploads', require('express').static(require('path').join(__dirname, '../uploads')));
 

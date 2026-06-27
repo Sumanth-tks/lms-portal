@@ -111,6 +111,10 @@ model User {
   evaluationsReceived    MentorEvaluation[]     @relation("InternEvaluations")
   evaluationsGiven       MentorEvaluation[]     @relation("MentorEvaluations")
 
+  earnedBadges           EarnedBadge[]          @relation("InternBadges")
+  xpLogs                 XpLog[]                @relation("InternXpLogs")
+  streaks                Streak[]               @relation("InternStreaks")
+
   @@map("users")
 }
 
@@ -710,6 +714,64 @@ model MentorEvaluation {
 
   @@unique([internId, mentorId, weekNumber])
   @@map("mentor_evaluations")
+}
+
+// ─── Gamification ───────────────────────────────────
+
+model Badge {
+  id           String   @id @default(uuid())
+  name         String   @unique
+  description  String
+  iconUrl      String?  @map("icon_url")
+  category     String
+  criteria     String
+  xpReward     Int      @default(0) @map("xp_reward")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  earnedBadges EarnedBadge[]
+
+  @@map("badges")
+}
+
+model EarnedBadge {
+  id        String   @id @default(uuid())
+  internId  String   @map("intern_id")
+  badgeId   String   @map("badge_id")
+  earnedAt  DateTime @default(now()) @map("earned_at")
+
+  intern    User     @relation("InternBadges", fields: [internId], references: [id])
+  badge     Badge    @relation(fields: [badgeId], references: [id])
+
+  @@unique([internId, badgeId])
+  @@map("earned_badges")
+}
+
+model XpLog {
+  id        String   @id @default(uuid())
+  internId  String   @map("intern_id")
+  amount    Int
+  reason    String
+  sourceType String  @map("source_type")
+  sourceId  String?  @map("source_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  intern    User     @relation("InternXpLogs", fields: [internId], references: [id])
+
+  @@map("xp_logs")
+}
+
+model Streak {
+  id             String   @id @default(uuid())
+  internId       String   @map("intern_id")
+  type           String
+  currentCount   Int      @default(0) @map("current_count")
+  longestCount   Int      @default(0) @map("longest_count")
+  lastActivityAt DateTime @default(now()) @map("last_activity_at")
+
+  intern         User     @relation("InternStreaks", fields: [internId], references: [id])
+
+  @@unique([internId, type])
+  @@map("streaks")
 }
 
 // ─── Notifications ───────────────────────────────────

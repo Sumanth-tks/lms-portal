@@ -24,6 +24,7 @@ import {
   Trophy,
   Rocket,
   TrendingUp,
+  Award,
 } from 'lucide-react';
 
 const menuItems = {
@@ -43,6 +44,7 @@ const menuItems = {
     { href: '/hackathons', label: 'Hackathons', icon: Trophy },
     { href: '/capstone', label: 'Capstone', icon: Rocket },
     { href: '/progress', label: 'Progress', icon: TrendingUp },
+    { href: '/gamification', label: 'Gamification', icon: Award },
     { href: '/calendar', label: 'Calendar', icon: Calendar },
     { href: '/access', label: 'Access Control', icon: Lock },
     { href: '/discord', label: 'Discord', icon: MessageCircle },
@@ -62,6 +64,7 @@ const menuItems = {
     { href: '/hackathons', label: 'Hackathons', icon: Trophy },
     { href: '/capstone', label: 'Capstone', icon: Rocket },
     { href: '/progress', label: 'Progress', icon: TrendingUp },
+    { href: '/gamification', label: 'Gamification', icon: Award },
     { href: '/calendar', label: 'Calendar', icon: Calendar },
     { href: '/access', label: 'Access Control', icon: Lock },
     { href: '/discord', label: 'Discord', icon: MessageCircle },
@@ -80,6 +83,7 @@ const menuItems = {
     { href: '/hackathons', label: 'Hackathons', icon: Trophy },
     { href: '/capstone', label: 'Capstone', icon: Rocket },
     { href: '/progress', label: 'Progress', icon: TrendingUp },
+    { href: '/gamification', label: 'Gamification', icon: Award },
     { href: '/calendar', label: 'Calendar', icon: Calendar },
     { href: '/discord', label: 'Discord', icon: MessageCircle },
   ],
