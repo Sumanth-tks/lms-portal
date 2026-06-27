@@ -25,6 +25,8 @@ import {
   Rocket,
   TrendingUp,
   Award,
+  Bell,
+  Settings,
 } from 'lucide-react';
 
 const menuItems = {
@@ -46,8 +48,10 @@ const menuItems = {
     { href: '/progress', label: 'Progress', icon: TrendingUp },
     { href: '/gamification', label: 'Gamification', icon: Award },
     { href: '/calendar', label: 'Calendar', icon: Calendar },
+    { href: '/notifications', label: 'Notifications', icon: Bell },
     { href: '/access', label: 'Access Control', icon: Lock },
     { href: '/discord', label: 'Discord', icon: MessageCircle },
+    { href: '/settings', label: 'Settings', icon: Settings },
   ],
   MENTOR: [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -66,8 +70,10 @@ const menuItems = {
     { href: '/progress', label: 'Progress', icon: TrendingUp },
     { href: '/gamification', label: 'Gamification', icon: Award },
     { href: '/calendar', label: 'Calendar', icon: Calendar },
+    { href: '/notifications', label: 'Notifications', icon: Bell },
     { href: '/access', label: 'Access Control', icon: Lock },
     { href: '/discord', label: 'Discord', icon: MessageCircle },
+    { href: '/settings', label: 'Settings', icon: Settings },
   ],
   INTERN: [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -84,8 +90,10 @@ const menuItems = {
     { href: '/capstone', label: 'Capstone', icon: Rocket },
     { href: '/progress', label: 'Progress', icon: TrendingUp },
     { href: '/gamification', label: 'Gamification', icon: Award },
+    { href: '/notifications', label: 'Notifications', icon: Bell },
     { href: '/calendar', label: 'Calendar', icon: Calendar },
     { href: '/discord', label: 'Discord', icon: MessageCircle },
+    { href: '/settings', label: 'Settings', icon: Settings },
   ],
 };
 
