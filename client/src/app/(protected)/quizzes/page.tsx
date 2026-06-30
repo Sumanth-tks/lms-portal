@@ -90,55 +90,73 @@ export default function QuizzesPage() {
       {showForm && (
         <form onSubmit={handleCreate} className="mb-6 rounded-xl border border-gray-200 bg-white p-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <input
-              type="text"
-              placeholder="Quiz title"
-              value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
-              required
-            />
-            <select
-              value={form.type}
-              onChange={(e) => setForm({ ...form, type: e.target.value })}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
-            >
-              <option value="MCQ">MCQ</option>
-              <option value="CODING">Coding</option>
-              <option value="SQL">SQL</option>
-              <option value="CASE_STUDY">Case Study</option>
-            </select>
-            <input
-              type="number"
-              placeholder="Max Score"
-              value={form.maxScore}
-              onChange={(e) => setForm({ ...form, maxScore: Number(e.target.value) })}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
-              required
-            />
-            <input
-              type="number"
-              placeholder="Time limit (mins)"
-              value={form.timeLimitMinutes}
-              onChange={(e) => setForm({ ...form, timeLimitMinutes: Number(e.target.value) })}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
-            />
-            <input
-              type="number"
-              placeholder="Max retakes"
-              value={form.maxRetakes}
-              onChange={(e) => setForm({ ...form, maxRetakes: Number(e.target.value) })}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
-            />
-            <input
-              type="number"
-              placeholder="Week number (1-14)"
-              value={form.weekNumber}
-              onChange={(e) => setForm({ ...form, weekNumber: e.target.value })}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
-              min={1}
-              max={14}
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Quiz Title</label>
+              <input
+                type="text"
+                placeholder="e.g. Week 1 Python Basics"
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+                required
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Quiz Type</label>
+              <select
+                value={form.type}
+                onChange={(e) => setForm({ ...form, type: e.target.value })}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+              >
+                <option value="MCQ">MCQ (multiple choice)</option>
+                <option value="CODING">Coding</option>
+                <option value="SQL">SQL</option>
+                <option value="CASE_STUDY">Case Study</option>
+              </select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Max Score (total points)</label>
+              <input
+                type="number"
+                placeholder="50"
+                value={form.maxScore}
+                onChange={(e) => setForm({ ...form, maxScore: Number(e.target.value) })}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+                required
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Time Limit (minutes)</label>
+              <input
+                type="number"
+                placeholder="30"
+                value={form.timeLimitMinutes}
+                onChange={(e) => setForm({ ...form, timeLimitMinutes: Number(e.target.value) })}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Max Retakes (allowed attempts)</label>
+              <input
+                type="number"
+                placeholder="1"
+                value={form.maxRetakes}
+                onChange={(e) => setForm({ ...form, maxRetakes: Number(e.target.value) })}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Week Number (1-14, optional)</label>
+              <input
+                type="number"
+                placeholder="e.g. 1"
+                value={form.weekNumber}
+                onChange={(e) => setForm({ ...form, weekNumber: e.target.value })}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+                min={1}
+                max={14}
+              />
+            </div>
           </div>
           <button
             type="submit"

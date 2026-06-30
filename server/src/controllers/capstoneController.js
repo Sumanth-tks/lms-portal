@@ -3,11 +3,17 @@ const prisma = new PrismaClient();
 
 async function createCapstone(req, res) {
   try {
-    const internId = req.body.internId || req.user.id;
+    if (req.user.role === 'INTERN') {
+      return res.status(403).json({ success: false, error: 'Only admins and mentors can start a capstone for an intern' });
+    }
+    const internId = req.body.internId;
+    if (!internId) {
+      return res.status(400).json({ success: false, error: 'Please select which intern this capstone is for' });
+    }
     const project = await prisma.capstoneProject.create({
       data: {
         internId,
-        mentorId: req.body.mentorId || null,
+        mentorId: req.body.mentorId || req.user.id,
         problemStatement: req.body.problemStatement || null,
         repoUrl: req.body.repoUrl || null,
       },

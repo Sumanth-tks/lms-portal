@@ -33,7 +33,6 @@ const menuItems = {
   ADMIN: [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/users', label: 'Users', icon: Users },
-    { href: '/batches', label: 'Batches', icon: FolderOpen },
     { href: '/curriculum', label: 'Curriculum', icon: BookOpen },
     { href: '/attendance', label: 'Attendance', icon: ClipboardCheck },
     { href: '/standups', label: 'Standups', icon: MessageSquare },
@@ -41,15 +40,12 @@ const menuItems = {
     { href: '/assignments', label: 'Assignments', icon: FileText },
     { href: '/quizzes', label: 'Quizzes', icon: Brain },
     { href: '/github', label: 'GitHub', icon: GitBranch },
-    { href: '/playground', label: 'Playground', icon: Code },
     { href: '/portfolio', label: 'Portfolio', icon: Briefcase },
     { href: '/hackathons', label: 'Hackathons', icon: Trophy },
     { href: '/capstone', label: 'Capstone', icon: Rocket },
     { href: '/progress', label: 'Progress', icon: TrendingUp },
-    { href: '/gamification', label: 'Gamification', icon: Award },
     { href: '/calendar', label: 'Calendar', icon: Calendar },
     { href: '/notifications', label: 'Notifications', icon: Bell },
-    { href: '/access', label: 'Access Control', icon: Lock },
     { href: '/discord', label: 'Discord', icon: MessageCircle },
     { href: '/settings', label: 'Settings', icon: Settings },
   ],
@@ -63,15 +59,12 @@ const menuItems = {
     { href: '/assignments', label: 'Assignments', icon: FileText },
     { href: '/quizzes', label: 'Quizzes', icon: Brain },
     { href: '/github', label: 'GitHub', icon: GitBranch },
-    { href: '/playground', label: 'Playground', icon: Code },
     { href: '/portfolio', label: 'Portfolio', icon: Briefcase },
     { href: '/hackathons', label: 'Hackathons', icon: Trophy },
     { href: '/capstone', label: 'Capstone', icon: Rocket },
     { href: '/progress', label: 'Progress', icon: TrendingUp },
-    { href: '/gamification', label: 'Gamification', icon: Award },
     { href: '/calendar', label: 'Calendar', icon: Calendar },
     { href: '/notifications', label: 'Notifications', icon: Bell },
-    { href: '/access', label: 'Access Control', icon: Lock },
     { href: '/discord', label: 'Discord', icon: MessageCircle },
     { href: '/settings', label: 'Settings', icon: Settings },
   ],
@@ -84,12 +77,10 @@ const menuItems = {
     { href: '/assignments', label: 'Assignments', icon: FileText },
     { href: '/quizzes', label: 'Quizzes', icon: Brain },
     { href: '/github', label: 'GitHub', icon: GitBranch },
-    { href: '/playground', label: 'Playground', icon: Code },
     { href: '/portfolio', label: 'Portfolio', icon: Briefcase },
     { href: '/hackathons', label: 'Hackathons', icon: Trophy },
     { href: '/capstone', label: 'Capstone', icon: Rocket },
     { href: '/progress', label: 'Progress', icon: TrendingUp },
-    { href: '/gamification', label: 'Gamification', icon: Award },
     { href: '/notifications', label: 'Notifications', icon: Bell },
     { href: '/calendar', label: 'Calendar', icon: Calendar },
     { href: '/discord', label: 'Discord', icon: MessageCircle },
@@ -106,13 +97,13 @@ export default function Sidebar() {
   const items = menuItems[user.role] || [];
 
   return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r border-gray-200 bg-white border-blue-100 bg-white">
-      <div className="flex h-16 items-center gap-2 border-b border-gray-200 px-6 border-blue-100">
+    <aside className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col border-r border-blue-100 bg-white">
+      <div className="flex h-16 shrink-0 items-center gap-2 border-b border-blue-100 px-6">
         <GraduationCap className="h-7 w-7 text-blue-600" />
         <span className="text-lg font-bold text-gray-800">LMS Platform</span>
       </div>
 
-      <nav className="flex flex-col gap-1 p-4">
+      <nav className="flex flex-1 flex-col gap-1 overflow-y-auto p-4">
         {items.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href;
@@ -133,7 +124,7 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="absolute bottom-0 w-full border-t border-gray-200 p-4 border-blue-100">
+      <div className="shrink-0 border-t border-blue-100 p-4">
         <div className="mb-3 px-3">
           <p className="text-sm font-medium text-gray-800">{user.name}</p>
           <p className="text-xs text-gray-500">{user.role}</p>

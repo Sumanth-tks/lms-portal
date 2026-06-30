@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import api from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import type { Assignment, Submission } from '@/types';
-import { FileText, Upload, Star, ArrowLeft } from 'lucide-react';
+import { FileText, Star, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 export default function AssignmentDetailPage() {
@@ -15,7 +15,7 @@ export default function AssignmentDetailPage() {
 
   const [assignment, setAssignment] = useState<Assignment | null>(null);
   const [loading, setLoading] = useState(true);
-  const [file, setFile] = useState<File | null>(null);
+  const [githubUrl, setGithubUrl] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [gradeForm, setGradeForm] = useState({ grade: 0, feedback: '', requestResubmit: false });
   const [gradingId, setGradingId] = useState<string | null>(null);
@@ -32,15 +32,11 @@ export default function AssignmentDetailPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!file) return;
+    if (!githubUrl.trim()) return;
     setSubmitting(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      await api.post(`/assignments/${id}/submit`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      setFile(null);
+      await api.post(`/assignments/${id}/submit`, { githubUrl: githubUrl.trim() });
+      setGithubUrl('');
       await loadAssignment();
     } catch {
       // handled
@@ -139,23 +135,24 @@ export default function AssignmentDetailPage() {
           <h2 className="mb-4 text-lg font-semibold text-gray-800">
             {latestSub ? 'Resubmit' : 'Submit'} Your Work
           </h2>
-          <div className="flex items-center gap-4">
-            <label className="flex cursor-pointer items-center gap-2 rounded-lg border-2 border-dashed border-gray-300 px-6 py-4 transition hover:border-blue-400">
-              <Upload className="h-5 w-5 text-gray-400" />
-              <span className="text-sm text-gray-500">{file ? file.name : 'Choose file'}</span>
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">GitHub Repository / File Link</label>
               <input
-                type="file"
-                className="hidden"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
-                accept={assignment.fileTypes || undefined}
+                type="url"
+                placeholder="https://github.com/username/repo"
+                value={githubUrl}
+                onChange={(e) => setGithubUrl(e.target.value)}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+                required
               />
-            </label>
+            </div>
             <button
               type="submit"
-              disabled={!file || submitting}
-              className="rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+              disabled={!githubUrl.trim() || submitting}
+              className="self-start rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
             >
-              {submitting ? 'Uploading...' : 'Submit'}
+              {submitting ? 'Submitting...' : 'Submit'}
             </button>
           </div>
         </form>
@@ -194,8 +191,8 @@ export default function AssignmentDetailPage() {
               </div>
 
               {sub.fileUrl && (
-                <a href={`http://localhost:5001${sub.fileUrl}`} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-xs text-blue-600 underline">
-                  View file
+                <a href={sub.fileUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-xs text-blue-600 underline">
+                  View submission ↗
                 </a>
               )}
 

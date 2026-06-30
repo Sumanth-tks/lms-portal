@@ -216,14 +216,26 @@ export default function ProgressPage() {
           {showPeerForm && (
             <form onSubmit={handlePeerReview} className="mb-6 rounded-xl border border-gray-200 bg-white p-6">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <select value={peerForm.revieweeId} onChange={(e) => setPeerForm({ ...peerForm, revieweeId: e.target.value })} className="rounded-lg border border-gray-300 px-3 py-2 text-sm" required>
-                  <option value="">Select intern...</option>
-                  {interns.filter((i) => i.id !== user?.id).map((i) => <option key={i.id} value={i.id}>{i.name}</option>)}
-                </select>
-                <input type="number" placeholder="Week #" value={peerForm.weekNumber} onChange={(e) => setPeerForm({ ...peerForm, weekNumber: Number(e.target.value) })} className="rounded-lg border border-gray-300 px-3 py-2 text-sm" min={1} required />
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-medium text-gray-600">Intern to Review</label>
+                  <select value={peerForm.revieweeId} onChange={(e) => setPeerForm({ ...peerForm, revieweeId: e.target.value })} className="rounded-lg border border-gray-300 px-3 py-2 text-sm" required>
+                    <option value="">Select intern...</option>
+                    {interns.filter((i) => i.id !== user?.id).map((i) => <option key={i.id} value={i.id}>{i.name}</option>)}
+                  </select>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-medium text-gray-600">Week Number (1-14)</label>
+                  <input type="number" placeholder="e.g. 1" value={peerForm.weekNumber} onChange={(e) => setPeerForm({ ...peerForm, weekNumber: Number(e.target.value) })} className="rounded-lg border border-gray-300 px-3 py-2 text-sm" min={1} required />
+                </div>
               </div>
-              <textarea placeholder="Strengths observed..." value={peerForm.strengths} onChange={(e) => setPeerForm({ ...peerForm, strengths: e.target.value })} className="mt-4 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm" rows={2} />
-              <textarea placeholder="Areas for improvement..." value={peerForm.improvements} onChange={(e) => setPeerForm({ ...peerForm, improvements: e.target.value })} className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm" rows={2} />
+              <div className="mt-4 flex flex-col gap-1">
+                <label className="text-xs font-medium text-gray-600">Strengths Observed</label>
+                <textarea placeholder="What did they do well?" value={peerForm.strengths} onChange={(e) => setPeerForm({ ...peerForm, strengths: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm" rows={2} />
+              </div>
+              <div className="mt-2 flex flex-col gap-1">
+                <label className="text-xs font-medium text-gray-600">Areas for Improvement</label>
+                <textarea placeholder="What could they improve?" value={peerForm.improvements} onChange={(e) => setPeerForm({ ...peerForm, improvements: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm" rows={2} />
+              </div>
               <button type="submit" className="mt-4 rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700">Submit Review</button>
             </form>
           )}
@@ -259,8 +271,11 @@ export default function ProgressPage() {
                 {interns.map((i) => <option key={i.id} value={i.id}>{i.name}</option>)}
               </select>
             )}
-            <input type="number" placeholder="Week #" value={reportForm.weekNumber} onChange={(e) => setReportForm({ ...reportForm, weekNumber: Number(e.target.value) })} className="w-24 rounded-lg border border-gray-300 px-3 py-2 text-sm" min={1} />
-            <button type="submit" className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">Generate Report</button>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-medium text-gray-600">Week Number (1-14)</label>
+              <input type="number" placeholder="e.g. 3" value={reportForm.weekNumber} onChange={(e) => setReportForm({ ...reportForm, weekNumber: Number(e.target.value) })} className="w-24 rounded-lg border border-gray-300 px-3 py-2 text-sm" min={1} />
+            </div>
+            <button type="submit" className="self-end rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">Generate Report</button>
           </form>
 
           <div className="space-y-4">

@@ -54,17 +54,38 @@ export default function HackathonsPage() {
       {showForm && (
         <form onSubmit={handleCreate} className="mb-6 rounded-xl border border-gray-200 bg-white p-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <input type="text" placeholder="Title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="rounded-lg border border-gray-300 px-4 py-2 text-sm" required />
-            <input type="number" placeholder="Day number" value={form.dayNumber} onChange={(e) => setForm({ ...form, dayNumber: Number(e.target.value) })} className="rounded-lg border border-gray-300 px-4 py-2 text-sm" required />
-            <input type="number" placeholder="Max score" value={form.maxScore} onChange={(e) => setForm({ ...form, maxScore: Number(e.target.value) })} className="rounded-lg border border-gray-300 px-4 py-2 text-sm" required />
-            <input type="datetime-local" placeholder="Start" value={form.startTime} onChange={(e) => setForm({ ...form, startTime: e.target.value })} className="rounded-lg border border-gray-300 px-4 py-2 text-sm" required />
-            <input type="datetime-local" placeholder="End" value={form.endTime} onChange={(e) => setForm({ ...form, endTime: e.target.value })} className="rounded-lg border border-gray-300 px-4 py-2 text-sm" required />
-            <label className="flex items-center gap-2 text-sm text-gray-600">
-              <input type="checkbox" checked={form.isTeam} onChange={(e) => setForm({ ...form, isTeam: e.target.checked })} />
-              Team event
-            </label>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Title</label>
+              <input type="text" placeholder="e.g. Data Viz Challenge" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="rounded-lg border border-gray-300 px-4 py-2 text-sm" required />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Day Number (program day)</label>
+              <input type="number" placeholder="30" value={form.dayNumber} onChange={(e) => setForm({ ...form, dayNumber: Number(e.target.value) })} className="rounded-lg border border-gray-300 px-4 py-2 text-sm" required />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Max Score (total points)</label>
+              <input type="number" placeholder="100" value={form.maxScore} onChange={(e) => setForm({ ...form, maxScore: Number(e.target.value) })} className="rounded-lg border border-gray-300 px-4 py-2 text-sm" required />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Start (date &amp; time)</label>
+              <input type="datetime-local" value={form.startTime} onChange={(e) => setForm({ ...form, startTime: e.target.value })} className="rounded-lg border border-gray-300 px-4 py-2 text-sm" required />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">End (date &amp; time)</label>
+              <input type="datetime-local" value={form.endTime} onChange={(e) => setForm({ ...form, endTime: e.target.value })} className="rounded-lg border border-gray-300 px-4 py-2 text-sm" required />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Event Format</label>
+              <label className="flex items-center gap-2 py-2 text-sm text-gray-600">
+                <input type="checkbox" checked={form.isTeam} onChange={(e) => setForm({ ...form, isTeam: e.target.checked })} />
+                Team event (interns work in groups)
+              </label>
+            </div>
           </div>
-          <textarea placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="mt-4 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm" rows={2} />
+          <div className="mt-4 flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">Description (instructions)</label>
+            <textarea placeholder="Describe the hackathon..." value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm" rows={2} />
+          </div>
           <button type="submit" className="mt-4 rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700">Create</button>
         </form>
       )}

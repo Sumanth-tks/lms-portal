@@ -3,7 +3,7 @@
 import { MessageCircle, ExternalLink, Users, Mic, Hash } from 'lucide-react';
 
 export default function DiscordPage() {
-  const DISCORD_INVITE = 'https://discord.gg/haPfVdvQs';
+  const DISCORD_INVITE = 'https://discord.gg/d4xyX2njKw';
 
   return (
     <div className="mx-auto max-w-2xl">

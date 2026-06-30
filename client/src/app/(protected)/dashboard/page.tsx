@@ -70,7 +70,6 @@ export default function DashboardPage() {
         <div>
           <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
             <StatCard icon={<Users className="h-5 w-5 text-blue-500" />} label="Total Users" value={s.totalUsers as number} bg="bg-blue-50" />
-            <StatCard icon={<FolderOpen className="h-5 w-5 text-indigo-500" />} label="Active Batches" value={s.activeBatches as number} bg="bg-indigo-50" />
             <StatCard icon={<BookOpen className="h-5 w-5 text-green-500" />} label="Courses" value={s.courses as number} bg="bg-green-50" />
             <StatCard icon={<FileText className="h-5 w-5 text-amber-500" />} label="Pending Submissions" value={s.pendingSubmissions as number} bg="bg-amber-50" />
           </div>
@@ -132,9 +131,6 @@ export default function DashboardPage() {
         <div>
           <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
             <StatCard icon={<ClipboardCheck className="h-5 w-5 text-blue-500" />} label="Attendance" value={`${s.attendanceRate}%`} bg="bg-blue-50" />
-            <StatCard icon={<Zap className="h-5 w-5 text-amber-500" />} label="Total XP" value={s.totalXp as number} bg="bg-amber-50" />
-            <StatCard icon={<Award className="h-5 w-5 text-purple-500" />} label="Badges" value={s.badgeCount as number} bg="bg-purple-50" />
-            <StatCard icon={<Flame className="h-5 w-5 text-orange-500" />} label="Streak" value={`${s.currentStreak} days`} bg="bg-orange-50" />
           </div>
           <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-5">
             <MiniStat label="Today Tasks" value={`${s.completedTasks}/${s.todayTasks}`} />
@@ -221,7 +217,6 @@ function QuickLinks({ role }: { role: string }) {
     { href: '/users', label: 'Manage Users', icon: Users },
     { href: '/assignments', label: 'Assignments', icon: FileText },
     { href: '/progress', label: 'Progress Reports', icon: ClipboardCheck },
-    { href: '/gamification', label: 'Gamification', icon: Award },
   ] : role === 'MENTOR' ? [
     { href: '/assignments', label: 'Grade Work', icon: FileText },
     { href: '/progress', label: 'Student Progress', icon: ClipboardCheck },
@@ -229,9 +224,7 @@ function QuickLinks({ role }: { role: string }) {
     { href: '/hackathons', label: 'Hackathons', icon: Trophy },
   ] : [
     { href: '/attendance', label: 'Mark Attendance', icon: ClipboardCheck },
-    { href: '/tasks', label: 'Daily Tasks', icon: FileText },
-    { href: '/gamification', label: 'Badges & XP', icon: Award },
-    { href: '/playground', label: 'Code Playground', icon: Brain },
+    { href: '/tasks', label: 'Daily Tasks', icon: FileText }
   ];
 
   return (

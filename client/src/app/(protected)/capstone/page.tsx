@@ -22,6 +22,8 @@ export default function CapstonePage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ problemStatement: '', repoUrl: '' });
+  const [interns, setInterns] = useState<{ id: string; name: string; email: string }[]>([]);
+  const [selectedIntern, setSelectedIntern] = useState('');
   const [editing, setEditing] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ phase: '' as CapstonePhase, repoUrl: '', deployedUrl: '', problemStatement: '' });
 
@@ -31,6 +33,12 @@ export default function CapstonePage() {
 
   useEffect(() => { loadData(); }, []);
 
+  useEffect(() => {
+    if (!isIntern) {
+      api.get('/users?role=INTERN').then((res) => setInterns(res.data.data)).catch(() => {});
+    }
+  }, [isIntern]);
+
   async function loadData() {
     const res = await api.get('/capstones');
     setProjects(res.data.data);
@@ -39,9 +47,10 @@ export default function CapstonePage() {
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
-    await api.post('/capstones', { problemStatement: form.problemStatement, repoUrl: form.repoUrl || undefined });
+    await api.post('/capstones', { internId: selectedIntern, problemStatement: form.problemStatement, repoUrl: form.repoUrl || undefined });
     setShowForm(false);
     setForm({ problemStatement: '', repoUrl: '' });
+    setSelectedIntern('');
     await loadData();
   }
 
@@ -74,17 +83,32 @@ export default function CapstonePage() {
           <h1 className="text-2xl font-bold text-gray-900">Capstone Projects</h1>
           <p className="mt-1 text-sm text-gray-500">Days 91–100 final project</p>
         </div>
-        {!myProject && (
+        {!isIntern && (
           <button onClick={() => setShowForm(!showForm)} className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
             <Plus className="h-4 w-4" /> Start Capstone
           </button>
         )}
       </div>
 
-      {showForm && (
+      {showForm && !isIntern && (
         <form onSubmit={handleCreate} className="mb-6 rounded-xl border border-gray-200 bg-white p-6">
-          <textarea placeholder="Problem statement..." value={form.problemStatement} onChange={(e) => setForm({ ...form, problemStatement: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm" rows={3} required />
-          <input type="url" placeholder="Repository URL (optional)" value={form.repoUrl} onChange={(e) => setForm({ ...form, repoUrl: e.target.value })} className="mt-4 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm" />
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">Assign to Intern</label>
+            <select value={selectedIntern} onChange={(e) => setSelectedIntern(e.target.value)} className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm" required>
+              <option value="">— Select an intern —</option>
+              {interns.map((i) => (
+                <option key={i.id} value={i.id}>{i.name} ({i.email})</option>
+              ))}
+            </select>
+          </div>
+          <div className="mt-4 flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">Problem Statement</label>
+            <textarea placeholder="What problem will this capstone solve?" value={form.problemStatement} onChange={(e) => setForm({ ...form, problemStatement: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm" rows={3} required />
+          </div>
+          <div className="mt-4 flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">Repository URL (optional)</label>
+            <input type="url" placeholder="https://github.com/..." value={form.repoUrl} onChange={(e) => setForm({ ...form, repoUrl: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm" />
+          </div>
           <button type="submit" className="mt-4 rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700">Submit</button>
         </form>
       )}

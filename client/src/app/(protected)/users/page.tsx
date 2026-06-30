@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import api from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import type { User } from '@/types';
-import { UserPlus, Users } from 'lucide-react';
+import { UserPlus, Link2, X, Trash2 } from 'lucide-react';
 
 export default function UsersPage() {
   const { user: currentUser } = useAuthStore();
@@ -14,6 +14,11 @@ export default function UsersPage() {
   const [form, setForm] = useState({ email: '', name: '', role: 'INTERN' as 'MENTOR' | 'INTERN' });
   const [creating, setCreating] = useState(false);
   const [tempPassword, setTempPassword] = useState('');
+
+  // Assign-interns modal state
+  const [assignMentor, setAssignMentor] = useState<User | null>(null);
+  const [assignSelected, setAssignSelected] = useState<string[]>([]);
+  const [assignSaving, setAssignSaving] = useState(false);
 
   useEffect(() => {
     loadUsers();
@@ -41,6 +46,46 @@ export default function UsersPage() {
     }
   }
 
+  async function openAssign(mentor: User) {
+    setAssignMentor(mentor);
+    setAssignSelected([]);
+    try {
+      const { data } = await api.get(`/users/${mentor.id}/interns`);
+      setAssignSelected(data.data.internIds || []);
+    } catch {
+      // start with empty selection
+    }
+  }
+
+  function toggleIntern(internId: string) {
+    setAssignSelected((prev) =>
+      prev.includes(internId) ? prev.filter((id) => id !== internId) : [...prev, internId]
+    );
+  }
+
+  async function saveAssignments() {
+    if (!assignMentor) return;
+    setAssignSaving(true);
+    try {
+      await api.put(`/users/${assignMentor.id}/interns`, { internIds: assignSelected });
+      setAssignMentor(null);
+    } catch {
+      // handled by interceptor
+    } finally {
+      setAssignSaving(false);
+    }
+  }
+
+  async function handleRemove(u: User) {
+    if (!confirm(`Remove ${u.name}? They will lose access. This can be undone later by an admin.`)) return;
+    try {
+      await api.delete(`/users/${u.id}`);
+      loadUsers();
+    } catch {
+      // handled by interceptor
+    }
+  }
+
   const statusColors: Record<string, string> = {
     ACTIVE: 'bg-green-100 text-green-700',
     INVITED: 'bg-yellow-100 text-yellow-700',
@@ -49,6 +94,8 @@ export default function UsersPage() {
     COMPLETED: 'bg-purple-100 text-purple-700',
     REMOVED: 'bg-red-100 text-red-700',
   };
+
+  const allInterns = users.filter((u) => u.role === 'INTERN');
 
   if (loading) {
     return (
@@ -99,33 +146,47 @@ export default function UsersPage() {
           className="mb-6 rounded-xl border border-gray-200 bg-white p-6"
         >
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <input
-              type="text"
-              placeholder="Name"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
-              required
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
-              required
-            />
-            {currentUser?.role === 'ADMIN' && (
-              <select
-                value={form.role}
-                onChange={(e) => setForm({ ...form, role: e.target.value as 'MENTOR' | 'INTERN' })}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Name</label>
+              <input
+                type="text"
+                placeholder="Full name"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
                 className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
-              >
-                <option value="INTERN">Intern</option>
-                <option value="MENTOR">Mentor</option>
-              </select>
+                required
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Email</label>
+              <input
+                type="email"
+                placeholder="name@example.com"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+                required
+              />
+            </div>
+            {currentUser?.role === 'ADMIN' && (
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-medium text-gray-700">Role</label>
+                <select
+                  value={form.role}
+                  onChange={(e) => setForm({ ...form, role: e.target.value as 'MENTOR' | 'INTERN' })}
+                  className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+                >
+                  <option value="INTERN">Intern</option>
+                  <option value="MENTOR">Mentor</option>
+                </select>
+              </div>
             )}
           </div>
+          {currentUser?.role === 'ADMIN' && form.role === 'MENTOR' && (
+            <p className="mt-3 text-xs text-gray-500">
+              After creating the mentor, use the &quot;Assign Interns&quot; button on their row to link interns to them.
+            </p>
+          )}
           <button
             type="submit"
             disabled={creating}
@@ -144,6 +205,9 @@ export default function UsersPage() {
               <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Email</th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Role</th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Status</th>
+              {currentUser?.role === 'ADMIN' && (
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Actions</th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -168,11 +232,91 @@ export default function UsersPage() {
                     {u.status}
                   </span>
                 </td>
+                {currentUser?.role === 'ADMIN' && (
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2">
+                      {u.role === 'MENTOR' && (
+                        <button
+                          onClick={() => openAssign(u)}
+                          className="flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 hover:bg-blue-100"
+                        >
+                          <Link2 className="h-3.5 w-3.5" />
+                          Assign Interns
+                        </button>
+                      )}
+                      {u.role !== 'ADMIN' && u.status !== 'REMOVED' && (
+                        <button
+                          onClick={() => handleRemove(u)}
+                          className="flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {assignMentor && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-md rounded-xl bg-white shadow-xl">
+            <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">Assign Interns</h2>
+                <p className="text-sm text-gray-500">Mentor: {assignMentor.name}</p>
+              </div>
+              <button onClick={() => setAssignMentor(null)} className="text-gray-400 hover:text-gray-600">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="max-h-80 overflow-y-auto px-6 py-4">
+              {allInterns.length === 0 ? (
+                <p className="text-sm text-gray-500">No interns exist yet. Create some interns first.</p>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {allInterns.map((intern) => (
+                    <label
+                      key={intern.id}
+                      className="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 px-3 py-2 hover:bg-gray-50"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={assignSelected.includes(intern.id)}
+                        onChange={() => toggleIntern(intern.id)}
+                        className="h-4 w-4 rounded border-gray-300"
+                      />
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{intern.name}</p>
+                        <p className="text-xs text-gray-500">{intern.email}</p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="flex items-center justify-end gap-2 border-t border-gray-200 px-6 py-4">
+              <button
+                onClick={() => setAssignMentor(null)}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveAssignments}
+                disabled={assignSaving}
+                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+              >
+                {assignSaving ? 'Saving...' : 'Save'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

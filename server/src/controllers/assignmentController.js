@@ -140,7 +140,7 @@ async function submitAssignment(req, res) {
       }
     }
 
-    const fileUrl = req.file ? `/uploads/${req.file.filename}` : null;
+    const fileUrl = req.body.githubUrl || req.body.fileUrl || null;
     const content = req.body.content || null;
 
     const submission = await prisma.submission.create({

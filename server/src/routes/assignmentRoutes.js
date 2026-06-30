@@ -23,7 +23,7 @@ router.get('/:id', authenticate, getAssignment);
 router.put('/:id', authorize('ADMIN', 'MENTOR'), validate(updateAssignmentSchema), updateAssignment);
 router.delete('/:id', authorize('ADMIN', 'MENTOR'), deleteAssignment);
 
-router.post('/:assignmentId/submit', authorize('INTERN'), upload.single('file'), submitAssignment);
+router.post('/:assignmentId/submit', authorize('INTERN'), submitAssignment);
 router.post('/submissions/:id/grade', authorize('ADMIN', 'MENTOR'), validate(gradeSubmissionSchema), gradeSubmission);
 
 module.exports = router;

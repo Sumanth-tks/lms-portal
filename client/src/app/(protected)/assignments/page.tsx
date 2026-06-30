@@ -86,45 +86,60 @@ export default function AssignmentsPage() {
       {showForm && (
         <form onSubmit={handleCreate} className="mb-6 rounded-xl border border-gray-200 bg-white p-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <input
-              type="text"
-              placeholder="Title"
-              value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Title</label>
+              <input
+                type="text"
+                placeholder="e.g. Week 1 Python Exercise"
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+                required
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Max Score (total points)</label>
+              <input
+                type="number"
+                placeholder="100"
+                value={form.maxScore}
+                onChange={(e) => setForm({ ...form, maxScore: Number(e.target.value) })}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+                required
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Deadline (due date &amp; time)</label>
+              <input
+                type="datetime-local"
+                value={form.deadline}
+                onChange={(e) => setForm({ ...form, deadline: e.target.value })}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+                required
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Allowed File Types</label>
+              <input
+                type="text"
+                placeholder=".py,.ipynb,.pdf"
+                value={form.fileTypes}
+                onChange={(e) => setForm({ ...form, fileTypes: e.target.value })}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+              />
+            </div>
+          </div>
+          <div className="mt-4 flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">Description (instructions for students)</label>
+            <textarea
+              placeholder="Describe what students need to do..."
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+              rows={3}
               required
-            />
-            <input
-              type="number"
-              placeholder="Max Score"
-              value={form.maxScore}
-              onChange={(e) => setForm({ ...form, maxScore: Number(e.target.value) })}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
-              required
-            />
-            <input
-              type="datetime-local"
-              value={form.deadline}
-              onChange={(e) => setForm({ ...form, deadline: e.target.value })}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
-              required
-            />
-            <input
-              type="text"
-              placeholder="File types (.py,.pdf)"
-              value={form.fileTypes}
-              onChange={(e) => setForm({ ...form, fileTypes: e.target.value })}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
             />
           </div>
-          <textarea
-            placeholder="Description"
-            value={form.description}
-            onChange={(e) => setForm({ ...form, description: e.target.value })}
-            className="mt-4 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
-            rows={3}
-            required
-          />
           <div className="mt-4 flex items-center gap-6">
             <label className="flex items-center gap-2 text-sm text-gray-700">
               <input

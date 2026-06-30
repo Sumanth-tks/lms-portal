@@ -159,4 +159,48 @@ async function deleteUser(req, res) {
   }
 }
 
-module.exports = { createUser, listUsers, getUser, updateUser, deleteUser };
+// List the intern IDs currently assigned to a given mentor
+async function getMentorInterns(req, res) {
+  try {
+    const mentorId = req.params.id;
+    const links = await prisma.mentorIntern.findMany({
+      where: { mentorId },
+      select: { internId: true },
+    });
+    return success(res, { internIds: links.map((l) => l.internId) });
+  } catch (err) {
+    return error(res, 'Failed to load mentor interns', 500);
+  }
+}
+
+// Replace the full set of interns assigned to a mentor with the provided list
+async function setMentorInterns(req, res) {
+  try {
+    const mentorId = req.params.id;
+    const internIds = Array.isArray(req.body.internIds) ? req.body.internIds : [];
+
+    const mentor = await prisma.user.findUnique({ where: { id: mentorId } });
+    if (!mentor || mentor.role !== 'MENTOR') {
+      return error(res, 'User is not a mentor', 400);
+    }
+
+    // Remove existing assignments for this mentor, then create the new set.
+    await prisma.mentorIntern.deleteMany({ where: { mentorId } });
+    if (internIds.length > 0) {
+      await prisma.mentorIntern.createMany({
+        data: internIds.map((internId, idx) => ({
+          mentorId,
+          internId,
+          isPrimary: idx === 0,
+        })),
+        skipDuplicates: true,
+      });
+    }
+
+    return success(res, { mentorId, internIds });
+  } catch (err) {
+    return error(res, 'Failed to assign interns', 500);
+  }
+}
+
+module.exports = { createUser, listUsers, getUser, updateUser, deleteUser, getMentorInterns, setMentorInterns };
