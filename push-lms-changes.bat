@@ -30,7 +30,7 @@ echo Cleaned up junk files.
 echo.
 echo === Step 2: Staging and pushing all changes ===
 git add -A
-git commit -m "feat: Add basePath /lms for subdirectory hosting, cleanup Haiku boilerplate"
+git commit -m "feat: Add basePath /lms, change API prefix to /lms-api, cleanup Haiku boilerplate"
 git push origin main
 echo.
 echo === Done. Check GitHub for the push. ===
