@@ -2,7 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const logger = require('./utils/logger');
 
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -22,32 +23,39 @@ const capstoneRoutes = require('./routes/capstoneRoutes');
 const progressRoutes = require('./routes/progressRoutes');
 const gamificationRoutes = require('./routes/gamificationRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const { authorizeFileAccess } = require('./middleware/fileAuth');
 
 const app = express();
 app.set('trust proxy', 1);
 const PORT = process.env.PORT || 5000;
 
+// Security headers
+app.use(helmet());
+
+// CORS configuration
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:3000',
   credentials: true,
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+// Body parsing
 app.use(express.json());
 app.use(cookieParser());
 
-const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: { success: false, error: 'Too many login attempts. Try again in 15 minutes.' },
-});
-
-const apiLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 100,
-  message: { success: false, error: 'Too many requests. Slow down.' },
-});
-
-app.use('/api', apiLimiter);
-app.use('/api/auth/login', loginLimiter);
+// Request logging (if Pino is available)
+if (logger) {
+  app.use((req, res, next) => {
+    logger.info({
+      method: req.method,
+      path: req.path,
+      ip: req.ip,
+    });
+    next();
+  });
+}
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
@@ -68,7 +76,8 @@ app.use('/api/progress', progressRoutes);
 app.use('/api/gamification', gamificationRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
-app.use('/uploads', require('express').static(require('path').join(__dirname, '../uploads')));
+// Protected file uploads - requires authentication
+app.use('/uploads', authorizeFileAccess, require('express').static(require('path').join(__dirname, '../uploads')));
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
