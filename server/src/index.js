@@ -57,29 +57,29 @@ if (logger) {
   });
 }
 
-app.use('/lms-api/auth', authRoutes);
-app.use('/lms-api/users', userRoutes);
-app.use('/lms-api/batches', batchRoutes);
-app.use('/lms-api/courses', courseRoutes);
-app.use('/lms-api/modules', moduleRoutes);
-app.use('/lms-api/lessons', lessonRoutes);
-app.use('/lms-api/access', accessRoutes);
-app.use('/lms-api/attendance', attendanceRoutes);
-app.use('/lms-api/standups', standupRoutes);
-app.use('/lms-api/daily-tasks', dailyTaskRoutes);
-app.use('/lms-api/assignments', assignmentRoutes);
-app.use('/lms-api/quizzes', quizRoutes);
-app.use('/lms-api/github', githubRoutes);
-app.use('/lms-api/hackathons', hackathonRoutes);
-app.use('/lms-api/capstones', capstoneRoutes);
-app.use('/lms-api/progress', progressRoutes);
-app.use('/lms-api/gamification', gamificationRoutes);
-app.use('/lms-api/dashboard', dashboardRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/batches', batchRoutes);
+app.use('/api/courses', courseRoutes);
+app.use('/api/modules', moduleRoutes);
+app.use('/api/lessons', lessonRoutes);
+app.use('/api/access', accessRoutes);
+app.use('/api/attendance', attendanceRoutes);
+app.use('/api/standups', standupRoutes);
+app.use('/api/daily-tasks', dailyTaskRoutes);
+app.use('/api/assignments', assignmentRoutes);
+app.use('/api/quizzes', quizRoutes);
+app.use('/api/github', githubRoutes);
+app.use('/api/hackathons', hackathonRoutes);
+app.use('/api/capstones', capstoneRoutes);
+app.use('/api/progress', progressRoutes);
+app.use('/api/gamification', gamificationRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Protected file uploads - requires authentication
 app.use('/uploads', authorizeFileAccess, require('express').static(require('path').join(__dirname, '../uploads')));
 
-app.get('/lms-api/health', (req, res) => {
+app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
