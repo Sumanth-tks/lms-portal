@@ -1,5 +1,6 @@
 const prisma = require('../config/db');
 const { hashPassword } = require('../utils/password');
+const crypto = require('crypto');
 
 const CURRICULUM = [
   { week: 1, title: 'Python Fundamentals', category: 'Python' },
@@ -21,7 +22,18 @@ const CURRICULUM = [
 async function seed() {
   console.log('Seeding database...');
 
-  const adminPassword = await hashPassword('Admin@123');
+  // Generate random temporary password for admin
+  const tempPassword = process.env.ADMIN_PASSWORD || crypto.randomBytes(12).toString('hex');
+  const adminPasswordHash = await hashPassword(tempPassword);
+
+  console.log('\n⚠️  IMPORTANT: ADMIN TEMPORARY PASSWORD');
+  console.log('─'.repeat(50));
+  console.log(`📧 Email: admin@lms.com`);
+  console.log(`🔐 Temporary Password: ${tempPassword}`);
+  console.log('─'.repeat(50));
+  console.log('⚠️  Change this password immediately after first login!');
+  console.log('    Go to Settings → Change Password\n');
+
   const admin = await prisma.user.upsert({
     where: { email: 'admin@lms.com' },
     update: {},
@@ -29,12 +41,12 @@ async function seed() {
       email: 'admin@lms.com',
       name: 'Admin',
       role: 'ADMIN',
-      passwordHash: adminPassword,
+      passwordHash: adminPasswordHash,
       status: 'ACTIVE',
-      forcePasswordChange: false,
+      forcePasswordChange: true,
     },
   });
-  console.log(`Admin created: ${admin.email}`);
+  console.log(`✅ Admin created: ${admin.email}`);
 
   for (const c of CURRICULUM) {
     await prisma.course.upsert({

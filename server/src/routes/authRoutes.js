@@ -3,12 +3,13 @@ const { login, refreshAccessToken, changePassword, logout, me } = require('../co
 const { authenticate } = require('../middleware/auth');
 const { validate } = require('../middleware/validate');
 const { loginSchema, changePasswordSchema } = require('../utils/schemas');
+const { loginLimiter, strictLimiter } = require('../middleware/rateLimiter');
 
 const router = Router();
 
-router.post('/login', validate(loginSchema), login);
+router.post('/login', loginLimiter, validate(loginSchema), login);
 router.post('/refresh', refreshAccessToken);
-router.post('/change-password', authenticate, validate(changePasswordSchema), changePassword);
+router.post('/change-password', authenticate, strictLimiter, validate(changePasswordSchema), changePassword);
 router.post('/logout', authenticate, logout);
 router.get('/me', authenticate, me);
 
