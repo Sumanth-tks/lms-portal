@@ -231,4 +231,35 @@ function QuickLinks({ role }: { role: string }) {
   ] : role === 'MENTOR' ? [
     { href: '/assignments', label: 'Grade Work', icon: FileText },
     { href: '/progress', label: 'Student Progress', icon: ClipboardCheck },
-    { href: '/github', label: 'Code R
+    { href: '/github', label: 'Code Reviews', icon: GitBranch },
+    { href: '/hackathons', label: 'Hackathons', icon: Trophy },
+  ] : [
+    { href: '/attendance', label: 'Mark Attendance', icon: ClipboardCheck },
+    { href: '/tasks', label: 'Daily Tasks', icon: FileText },
+  ];
+
+  return (
+    <div className="glass-card p-5">
+      <h3 className="mb-3 text-sm font-semibold text-[var(--slate-700)]">Quick Actions</h3>
+      <div className="grid grid-cols-2 gap-2">
+        {links.map((l) => {
+          const Icon = l.icon;
+          return (
+            <Link
+              key={l.href}
+              href={l.href}
+              className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--slate-500)] transition-colors hover:text-[var(--primary-600)]"
+              style={{
+                background: 'rgba(255,255,255,0.28)',
+                border: '0.5px solid rgba(255,255,255,0.35)',
+              }}
+            >
+              <Icon className="h-4 w-4" />
+              {l.label}
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
