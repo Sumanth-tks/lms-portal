@@ -93,9 +93,9 @@ export default function Sidebar() {
   const items = menuItems[user.role] || [];
 
   return (
-    <aside className="flex w-full shrink-0 p-3 pb-0 md:w-[248px] md:p-4 md:pr-2">
+    <aside className="flex w-full shrink-0 self-stretch p-4 pb-0 md:w-72 md:p-5 md:pr-3 lg:w-80">
       <div
-        className="glass-panel flex max-h-[515px] min-h-[220px] w-full flex-col overflow-hidden"
+        className="glass-panel flex min-h-[520px] w-full flex-col overflow-hidden md:min-h-[calc(100vh-5.5rem)]"
         style={{
           background: 'rgba(255, 255, 255, 0.34)',
           border: '0.5px solid rgba(255, 255, 255, 0.5)',

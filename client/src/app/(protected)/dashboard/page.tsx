@@ -60,31 +60,31 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <h1 className="mb-0.5 text-xl font-semibold text-[var(--slate-800)]">Welcome back, {user?.name}</h1>
-      <p className="mb-4 text-sm text-[var(--slate-400)]">
+      <h1 className="mb-1 text-2xl font-semibold text-[var(--slate-800)]">Welcome back, {user?.name}</h1>
+      <p className="mb-6 text-sm text-[var(--slate-400)]">
         {user?.role === 'ADMIN' ? 'Admin Dashboard' : user?.role === 'MENTOR' ? 'Mentor Dashboard' : 'Your Learning Dashboard'}
       </p>
 
       {/* Admin Dashboard */}
       {user?.role === 'ADMIN' && (
         <div>
-          <div className="mb-3 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+          <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
             <StatCard icon={<Users className="h-5 w-5 text-[var(--primary-600)]" />} label="Total Users" value={s.totalUsers as number} colorClass="si-blue" />
             <StatCard icon={<BookOpen className="h-5 w-5 text-[var(--sage-500)]" />} label="Courses" value={s.courses as number} colorClass="si-green" />
             <StatCard icon={<FileText className="h-5 w-5 text-[var(--gold-500)]" />} label="Pending Submissions" value={s.pendingSubmissions as number} colorClass="si-gold" />
           </div>
-          <div className="mb-3 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+          <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
             <MiniStat label="Admins" value={s.admins as number} />
             <MiniStat label="Mentors" value={s.mentors as number} />
             <MiniStat label="Interns" value={s.interns as number} />
             <MiniStat label="Present Today" value={`${s.presentToday}/${s.totalToday}`} />
           </div>
-          <div className="grid grid-cols-1 gap-2.5 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <QuickLinks role="ADMIN" />
             {data.recentUsers && (
-              <div className="glass-card p-4">
+              <div className="glass-card p-5">
                 <h3 className="mb-3 text-sm font-semibold text-[var(--slate-700)]">Recent Users</h3>
-                <div className="space-y-1.5">
+                <div className="space-y-2">
                   {data.recentUsers.map((u) => (
                     <div key={u.id} className="flex items-center justify-between text-sm">
                       <span className="text-[var(--slate-600)]">{u.name}</span>
@@ -101,16 +101,16 @@ export default function DashboardPage() {
       {/* Mentor Dashboard */}
       {user?.role === 'MENTOR' && (
         <div>
-          <div className="mb-3 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+          <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
             <StatCard icon={<Users className="h-5 w-5 text-[var(--primary-600)]" />} label="My Interns" value={s.menteeCount as number} colorClass="si-blue" />
             <StatCard icon={<ClipboardCheck className="h-5 w-5 text-[var(--sage-500)]" />} label="Present Today" value={`${s.presentToday}/${s.totalToday}`} colorClass="si-green" />
             <StatCard icon={<FileText className="h-5 w-5 text-[var(--gold-500)]" />} label="Pending Reviews" value={(s.pendingSubmissions as number) + (s.pendingReviews as number)} colorClass="si-gold" />
             <StatCard icon={<Brain className="h-5 w-5 text-[var(--rose-500)]" />} label="Standups Today" value={s.standupsDone as number} colorClass="si-purple" />
           </div>
-          <div className="grid grid-cols-1 gap-2.5 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <QuickLinks role="MENTOR" />
             {data.todayAttendance && data.todayAttendance.length > 0 && (
-              <div className="glass-card p-4">
+              <div className="glass-card p-5">
                 <h3 className="mb-3 text-sm font-semibold text-[var(--slate-700)]">Today&apos;s Attendance</h3>
                 <div className="space-y-2">
                   {data.todayAttendance.map((a, i) => (
@@ -129,20 +129,20 @@ export default function DashboardPage() {
       {/* Intern Dashboard */}
       {user?.role === 'INTERN' && (
         <div>
-          <div className="mb-3 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+          <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
             <StatCard icon={<ClipboardCheck className="h-5 w-5 text-[var(--primary-600)]" />} label="Attendance" value={`${s.attendanceRate}%`} colorClass="si-blue" />
           </div>
-          <div className="mb-3 grid grid-cols-2 gap-2.5 sm:grid-cols-5">
+          <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-5">
             <MiniStat label="Today Tasks" value={`${s.completedTasks}/${s.todayTasks}`} />
             <MiniStat label="Submissions" value={s.totalSubmissions as number} />
             <MiniStat label="Quiz Attempts" value={s.quizAttempts as number} />
             <MiniStat label="Commits" value={s.commits as number} />
             <MiniStat label="Capstone" value={(s.capstonePhase as string) || 'Not started'} />
           </div>
-          <div className="grid grid-cols-1 gap-2.5 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <QuickLinks role="INTERN" />
             {data.recentSubmissions && data.recentSubmissions.length > 0 && (
-              <div className="glass-card p-4">
+              <div className="glass-card p-5">
                 <h3 className="mb-3 text-sm font-semibold text-[var(--slate-700)]">Recent Submissions</h3>
                 <div className="space-y-2">
                   {data.recentSubmissions.map((sub) => (
@@ -162,7 +162,7 @@ export default function DashboardPage() {
 
       {/* Notifications */}
       {data.notifications && data.notifications.length > 0 && (
-        <div className="glass-card mt-3 p-4">
+        <div className="glass-card mt-6 p-5">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Bell className="h-5 w-5 text-[var(--slate-400)]" />
@@ -202,11 +202,11 @@ const iconStyles: Record<string, React.CSSProperties> = {
 
 function StatCard({ icon, label, value, colorClass }: { icon: React.ReactNode; label: string; value: number | string; colorClass: string }) {
   return (
-    <div className="glass-card p-3.5">
+    <div className="glass-card p-4">
       <div className="flex items-center gap-3">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl" style={iconStyles[colorClass]}>{icon}</div>
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl" style={iconStyles[colorClass]}>{icon}</div>
         <div>
-          <p className="text-lg font-semibold leading-tight text-[var(--slate-800)]">{value}</p>
+          <p className="text-xl font-semibold leading-tight text-[var(--slate-800)]">{value}</p>
           <p className="text-xs text-[var(--slate-400)]">{label}</p>
         </div>
       </div>
@@ -216,7 +216,7 @@ function StatCard({ icon, label, value, colorClass }: { icon: React.ReactNode; l
 
 function MiniStat({ label, value }: { label: string; value: number | string }) {
   return (
-    <div className="glass-card-sm px-3 py-2 text-center">
+    <div className="glass-card-sm px-3 py-2.5 text-center">
       <p className="text-xs text-[var(--slate-400)]">{label}</p>
       <p className="text-sm font-semibold text-[var(--slate-700)]">{typeof value === 'number' ? value : value}</p>
     </div>
@@ -225,9 +225,9 @@ function MiniStat({ label, value }: { label: string; value: number | string }) {
 
 function QuickLinks({ role }: { role: string }) {
   const links = role === 'ADMIN' ? [
-    { href: '/users', label: 'Users', icon: Users },
+    { href: '/users', label: 'Manage Users', icon: Users },
     { href: '/assignments', label: 'Assignments', icon: FileText },
-    { href: '/progress', label: 'Progress', icon: ClipboardCheck },
+    { href: '/progress', label: 'Progress Reports', icon: ClipboardCheck },
   ] : role === 'MENTOR' ? [
     { href: '/assignments', label: 'Grade Work', icon: FileText },
     { href: '/progress', label: 'Student Progress', icon: ClipboardCheck },
@@ -239,7 +239,7 @@ function QuickLinks({ role }: { role: string }) {
   ];
 
   return (
-    <div className="glass-card p-4">
+    <div className="glass-card p-5">
       <h3 className="mb-3 text-sm font-semibold text-[var(--slate-700)]">Quick Actions</h3>
       <div className="grid grid-cols-2 gap-2">
         {links.map((l) => {
@@ -248,13 +248,13 @@ function QuickLinks({ role }: { role: string }) {
             <Link
               key={l.href}
               href={l.href}
-              className="flex min-w-0 items-center gap-1.5 rounded-lg px-2.5 py-2 text-[13px] font-medium text-[var(--slate-500)] transition-colors hover:text-[var(--primary-600)]"
+              className="flex min-w-0 items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--slate-500)] transition-colors hover:text-[var(--primary-600)]"
               style={{
                 background: 'rgba(255,255,255,0.28)',
                 border: '0.5px solid rgba(255,255,255,0.35)',
               }}
             >
-              <Icon className="h-3.5 w-3.5 shrink-0" />
+              <Icon className="h-4 w-4 shrink-0" />
               <span className="min-w-0 truncate">{l.label}</span>
             </Link>
           );
