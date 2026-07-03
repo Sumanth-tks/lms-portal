@@ -5,12 +5,21 @@ const prisma = require('../config/db');
 async function linkRepo(req, res) {
   try {
     const { repoUrl, repoName } = req.body;
+    const normalizedRepoUrl = repoUrl.trim();
+    const normalizedRepoName = repoName.trim();
     const internId = req.user.role === 'INTERN' ? req.user.id : (req.body.internId || req.user.id);
 
-    const link = await prisma.gitHubLink.create({
-      data: { internId, repoUrl, repoName },
+    const link = await prisma.gitHubLink.upsert({
+      where: {
+        internId_repoUrl: {
+          internId,
+          repoUrl: normalizedRepoUrl,
+        },
+      },
+      update: { repoName: normalizedRepoName },
+      create: { internId, repoUrl: normalizedRepoUrl, repoName: normalizedRepoName },
     });
-    res.status(201).json({ success: true, data: link });
+    res.status(200).json({ success: true, data: link });
   } catch (err) {
     if (err.code === 'P2002') return res.status(409).json({ success: false, error: 'Repo already linked' });
     res.status(500).json({ success: false, error: err.message });
