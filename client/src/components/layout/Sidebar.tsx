@@ -136,4 +136,36 @@ export default function Sidebar() {
               style={
                 active
                   ? {
-                      background: 'rgba(59, 1
+                      background: 'rgba(59, 108, 181, 0.12)',
+                      border: '0.5px solid rgba(59, 108, 181, 0.12)',
+                      boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.25)',
+                    }
+                  : undefined
+              }
+            >
+              <Icon className="h-4 w-4" />
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div
+        className="shrink-0 p-4"
+        style={{ borderTop: '0.5px solid rgba(0, 0, 0, 0.06)' }}
+      >
+        <div className="mb-3 px-3">
+          <p className="text-sm font-semibold text-[var(--slate-700)]">{user.name}</p>
+          <p className="text-xs text-[var(--slate-400)]">{user.role}</p>
+        </div>
+        <button
+          onClick={() => logout()}
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--danger-500)] transition-colors hover:bg-[rgba(181,59,59,0.08)]"
+        >
+          <LogOut className="h-5 w-5" />
+          Logout
+        </button>
+      </div>
+    </aside>
+  );
+}
