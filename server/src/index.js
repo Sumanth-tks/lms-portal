@@ -23,6 +23,7 @@ const capstoneRoutes = require('./routes/capstoneRoutes');
 const progressRoutes = require('./routes/progressRoutes');
 const gamificationRoutes = require('./routes/gamificationRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const calendarEventRoutes = require('./routes/calendarEventRoutes');
 const { authorizeFileAccess } = require('./middleware/fileAuth');
 
 const app = express();
@@ -75,6 +76,7 @@ app.use('/api/capstones', capstoneRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/gamification', gamificationRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/calendar-events', calendarEventRoutes);
 
 // Protected file uploads - requires authentication
 app.use('/uploads', authorizeFileAccess, require('express').static(require('path').join(__dirname, '../uploads')));
