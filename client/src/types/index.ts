@@ -84,6 +84,19 @@ export interface Attendance {
   intern?: { id: string; name: string; email: string };
 }
 
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  description: string | null;
+  date: string;
+  startTime: string | null;
+  endTime: string | null;
+  type: string;
+  createdBy: string;
+  createdAt: string;
+  creator?: { id: string; name: string; role: Role };
+}
+
 export interface DailyStandup {
   id: string;
   internId: string;

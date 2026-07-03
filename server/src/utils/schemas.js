@@ -307,6 +307,15 @@ const updateStreakSchema = z.object({
   type: z.string().min(1, 'Type required'),
 });
 
+const createCalendarEventSchema = z.object({
+  title: z.string().min(1, 'Title required'),
+  description: z.string().optional(),
+  date: z.string().min(1, 'Date required'),
+  startTime: z.string().optional(),
+  endTime: z.string().optional(),
+  type: z.string().optional(),
+});
+
 const createPeerReviewSchema = z.object({
   revieweeId: z.string().min(1, 'Reviewee required'),
   assignmentId: z.string().min(1).optional(),
@@ -376,6 +385,7 @@ module.exports = {
   awardBadgeSchema,
   addXpSchema,
   updateStreakSchema,
+  createCalendarEventSchema,
   createPeerReviewSchema,
   generateReportSchema,
   mentorCommentSchema,

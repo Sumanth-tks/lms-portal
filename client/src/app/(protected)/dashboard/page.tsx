@@ -6,7 +6,7 @@ import api from '@/lib/api';
 import type { Notification as Notif } from '@/types';
 import {
   Activity, ArrowRight, BookOpen, Users, ClipboardCheck, FileText,
-  Brain, GitBranch, Trophy, Bell, Check,
+  Brain, GitBranch, Trophy, Bell, Check, TrendingUp,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -89,6 +89,17 @@ export default function DashboardPage() {
             <MiniStat label="Mentors" value={s.mentors as number} />
             <MiniStat label="Interns" value={s.interns as number} />
           </div>
+          <DashboardAnalytics
+            segments={[
+              { label: 'Admins', value: s.admins as number, color: '#3B6CB5' },
+              { label: 'Mentors', value: s.mentors as number, color: '#2D7A4F' },
+              { label: 'Interns', value: s.interns as number, color: '#9A6B1E' },
+            ]}
+            bars={[
+              { label: 'Attendance', value: percent(s.presentToday as number, s.totalToday as number), detail: `${s.presentToday}/${s.totalToday}` },
+              { label: 'Submission Queue', value: Math.min(100, ((s.pendingSubmissions as number) || 0) * 20), detail: `${s.pendingSubmissions || 0} pending` },
+            ]}
+          />
           <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(380px,0.86fr)]">
             <QuickLinks role="ADMIN" />
             {data.recentUsers && <RecentUsers users={data.recentUsers} />}
@@ -105,6 +116,16 @@ export default function DashboardPage() {
             <StatCard icon={<FileText className="h-5 w-5 text-[var(--gold-500)]" />} label="Pending Reviews" value={(s.pendingSubmissions as number) + (s.pendingReviews as number)} colorClass="si-gold" />
             <StatCard icon={<Brain className="h-5 w-5 text-[var(--rose-500)]" />} label="Standups Today" value={s.standupsDone as number} colorClass="si-purple" />
           </div>
+          <DashboardAnalytics
+            segments={[
+              { label: 'Present', value: s.presentToday as number, color: '#2D7A4F' },
+              { label: 'Remaining', value: Math.max(0, (s.totalToday as number) - (s.presentToday as number)), color: '#9EAAB8' },
+            ]}
+            bars={[
+              { label: 'Attendance', value: percent(s.presentToday as number, s.totalToday as number), detail: `${s.presentToday}/${s.totalToday}` },
+              { label: 'Review Load', value: Math.min(100, (((s.pendingSubmissions as number) + (s.pendingReviews as number)) || 0) * 14), detail: `${(s.pendingSubmissions as number) + (s.pendingReviews as number)} queued` },
+            ]}
+          />
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <QuickLinks role="MENTOR" />
             {data.todayAttendance && data.todayAttendance.length > 0 && (
@@ -137,6 +158,16 @@ export default function DashboardPage() {
             <MiniStat label="Commits" value={s.commits as number} />
             <MiniStat label="Capstone" value={(s.capstonePhase as string) || 'Not started'} />
           </div>
+          <DashboardAnalytics
+            segments={[
+              { label: 'Attendance', value: s.attendanceRate as number, color: '#3B6CB5' },
+              { label: 'Gap', value: Math.max(0, 100 - (s.attendanceRate as number)), color: '#C5CDD8' },
+            ]}
+            bars={[
+              { label: 'Attendance', value: s.attendanceRate as number, detail: `${s.attendanceRate}%` },
+              { label: 'Daily Tasks', value: percent(s.completedTasks as number, s.todayTasks as number), detail: `${s.completedTasks}/${s.todayTasks}` },
+            ]}
+          />
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <QuickLinks role="INTERN" />
             {data.recentSubmissions && data.recentSubmissions.length > 0 && (
@@ -197,6 +228,81 @@ const iconStyles: Record<string, React.CSSProperties> = {
   'si-gold': { background: 'rgba(154,107,30,0.15)', border: '0.5px solid rgba(154,107,30,0.08)', boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.25)' },
   'si-purple': { background: 'rgba(107,63,160,0.13)', border: '0.5px solid rgba(107,63,160,0.08)', boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.25)' },
 };
+
+function percent(value: number, total: number) {
+  if (!total) return 0;
+  return Math.max(0, Math.min(100, Math.round((value / total) * 100)));
+}
+
+function DashboardAnalytics({
+  segments,
+  bars,
+}: {
+  segments: { label: string; value: number; color: string }[];
+  bars: { label: string; value: number; detail: string }[];
+}) {
+  const total = Math.max(segments.reduce((sum, item) => sum + item.value, 0), 1);
+  let offset = 25;
+
+  return (
+    <div className="liquid-card p-5">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <TrendingUp className="h-4 w-4 text-[var(--primary-500)]" />
+          <h3 className="text-sm font-semibold text-[var(--slate-700)]">Analytics Snapshot</h3>
+        </div>
+        <span className="rounded-full bg-white/35 px-2.5 py-1 text-xs font-medium text-[var(--slate-400)]">Live</span>
+      </div>
+      <div className="grid gap-5 lg:grid-cols-[160px_minmax(0,1fr)]">
+        <div className="flex items-center gap-4">
+          <svg className="h-24 w-24 -rotate-90" viewBox="0 0 42 42" aria-hidden="true">
+            <circle cx="21" cy="21" r="15.9" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="6" />
+            {segments.map((segment) => {
+              const dash = (segment.value / total) * 100;
+              const circle = (
+                <circle
+                  key={segment.label}
+                  cx="21"
+                  cy="21"
+                  r="15.9"
+                  fill="none"
+                  stroke={segment.color}
+                  strokeDasharray={`${dash} ${100 - dash}`}
+                  strokeDashoffset={offset}
+                  strokeLinecap="round"
+                  strokeWidth="6"
+                />
+              );
+              offset -= dash;
+              return circle;
+            })}
+          </svg>
+          <div className="space-y-1">
+            {segments.map((segment) => (
+              <div key={segment.label} className="flex items-center gap-2 text-xs text-[var(--slate-500)]">
+                <span className="h-2 w-2 rounded-full" style={{ background: segment.color }} />
+                <span>{segment.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {bars.map((bar) => (
+            <div key={bar.label} className="liquid-control p-3">
+              <div className="mb-2 flex items-center justify-between gap-3 text-xs">
+                <span className="font-medium text-[var(--slate-500)]">{bar.label}</span>
+                <span className="text-[var(--slate-400)]">{bar.detail}</span>
+              </div>
+              <div className="h-2 overflow-hidden rounded-full bg-white/45">
+                <div className="h-full rounded-full bg-[var(--primary-500)] transition-[width] duration-700" style={{ width: `${Math.max(0, Math.min(100, bar.value))}%` }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function StatCard({
   icon,

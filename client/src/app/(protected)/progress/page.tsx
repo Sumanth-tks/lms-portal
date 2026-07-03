@@ -164,6 +164,8 @@ export default function ProgressPage() {
             <StatCard label="Commits" value={stats.commitCount.toString()} sub={`${stats.quizzesTaken} quizzes`} color="amber" />
           </div>
 
+          <ProgressAnalytics stats={stats} reports={weeklyReports} />
+
           {recentEvals.length > 0 && (
             <div className="mb-6 glass-card p-6">
               <h2 className="mb-4 text-base font-semibold text-[var(--slate-700)]">Recent Evaluations</h2>
@@ -387,6 +389,81 @@ export default function ProgressPage() {
         </div>
       )}
     </div>
+  );
+}
+
+function ProgressAnalytics({ stats, reports }: { stats: ProgressStats; reports: WeeklyReport[] }) {
+  const indicators = [
+    { label: 'Attendance', value: stats.attendanceRate, detail: `${stats.presentDays}/${stats.totalDays}` },
+    { label: 'Tasks', value: stats.taskCompletionRate, detail: `${stats.completedTasks}/${stats.totalTasks}` },
+    { label: 'Grades', value: Math.min(100, Math.round(stats.avgGrade)), detail: `${stats.gradedSubmissions} graded` },
+  ];
+  const trend = reports
+    .slice()
+    .sort((a, b) => a.weekNumber - b.weekNumber)
+    .slice(-6)
+    .map((report) => ({
+      label: `W${report.weekNumber}`,
+      value: report.overallScore ?? Math.round(((report.summaryJson.presentDays / Math.max(report.summaryJson.attendanceDays, 1)) * 100 + (report.summaryJson.completedTasks / Math.max(report.summaryJson.totalTasks, 1)) * 100) / 2),
+    }));
+
+  return (
+    <div className="glass-card mb-6 p-5">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <TrendingUp className="h-4 w-4 text-[var(--primary-500)]" />
+          <h2 className="text-base font-semibold text-[var(--slate-700)]">Performance Snapshot</h2>
+        </div>
+        <span className="rounded-full bg-white/35 px-2.5 py-1 text-xs font-medium text-[var(--slate-400)]">
+          {trend.length ? `${trend.length} weeks` : 'Current'}
+        </span>
+      </div>
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_220px]">
+        <div className="grid gap-3 sm:grid-cols-3">
+          {indicators.map((item) => (
+            <div key={item.label} className="rounded-xl bg-white/30 p-3">
+              <div className="mb-2 flex items-center justify-between text-xs">
+                <span className="font-medium text-[var(--slate-500)]">{item.label}</span>
+                <span className="text-[var(--slate-400)]">{item.detail}</span>
+              </div>
+              <div className="h-2 overflow-hidden rounded-full bg-white/55">
+                <div className="h-full rounded-full bg-[var(--primary-500)] transition-[width] duration-700" style={{ width: `${Math.max(0, Math.min(100, item.value))}%` }} />
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="rounded-xl bg-white/30 p-3">
+          <div className="mb-2 flex items-center justify-between text-xs">
+            <span className="font-medium text-[var(--slate-500)]">Weekly Trend</span>
+            <span className="text-[var(--slate-400)]">{trend.length ? `${trend[trend.length - 1].value}%` : 'No reports'}</span>
+          </div>
+          <MiniTrend values={trend.map((item) => item.value)} />
+          {trend.length > 0 && (
+            <div className="mt-2 flex justify-between text-[10px] text-[var(--slate-300)]">
+              {trend.map((item) => <span key={item.label}>{item.label}</span>)}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MiniTrend({ values }: { values: number[] }) {
+  if (values.length < 2) {
+    return <div className="flex h-14 items-center justify-center text-xs text-[var(--slate-300)]">Waiting for weekly reports</div>;
+  }
+
+  const points = values.map((value, index) => {
+    const x = (index / Math.max(values.length - 1, 1)) * 100;
+    const y = 48 - (Math.max(0, Math.min(100, value)) / 100) * 42;
+    return `${x},${y}`;
+  }).join(' ');
+
+  return (
+    <svg className="h-14 w-full overflow-visible" viewBox="0 0 100 52" preserveAspectRatio="none" aria-hidden="true">
+      <polyline points={points} fill="none" stroke="rgba(59,108,181,0.85)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }
 

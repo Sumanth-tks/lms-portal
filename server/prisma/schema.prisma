@@ -73,6 +73,7 @@ model User {
 
   refreshTokens      RefreshToken[]
   notifications      Notification[]
+  createdCalendarEvents CalendarEvent[] @relation("CalendarEventCreator")
 
   createdModules     Module[]       @relation("ModuleCreator")
   createdLessons     Lesson[]       @relation("LessonCreator")
@@ -775,6 +776,24 @@ model Streak {
 }
 
 // ─── Notifications ───────────────────────────────────
+
+model CalendarEvent {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  date        DateTime @db.Date
+  startTime   String?  @map("start_time")
+  endTime     String?  @map("end_time")
+  type        String   @default("GENERAL")
+  createdBy   String   @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  creator     User     @relation("CalendarEventCreator", fields: [createdBy], references: [id])
+
+  @@index([date])
+  @@map("calendar_events")
+}
 
 model Notification {
   id        String   @id @default(uuid())
