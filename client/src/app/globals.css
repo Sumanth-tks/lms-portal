@@ -57,16 +57,16 @@
   --info: #3B6CB5;
 
   /* Glass Card styling */
-  --card-bg: rgba(255, 255, 255, 0.4);
-  --card-border: rgba(255, 255, 255, 0.5);
+  --card-bg: rgba(255, 255, 255, 0.46);
+  --card-border: rgba(255, 255, 255, 0.6);
   --card-radius: 14px;
-  --card-shadow: inset 0 0.5px 0 rgba(255,255,255,0.5), 0 1px 8px rgba(0,0,0,0.04);
+  --card-shadow: inset 0 0.5px 0 rgba(255,255,255,0.65), 0 14px 32px rgba(59,108,181,0.08), 0 2px 10px rgba(30,42,58,0.04);
   --card-blur: blur(30px) saturate(1.6);
 
   /* Glass panel styling */
   --glass-bg: rgba(255, 255, 255, 0.42);
   --glass-border: rgba(255, 255, 255, 0.55);
-  --glass-shadow: inset 0 0.5px 0 rgba(255,255,255,0.6), 0 2px 12px rgba(0,0,0,0.05);
+  --glass-shadow: inset 0 0.5px 0 rgba(255,255,255,0.68), 0 18px 45px rgba(59,108,181,0.1), 0 2px 12px rgba(30,42,58,0.04);
   --glass-blur: blur(40px) saturate(1.8);
 
   /* Page gradient background */
@@ -103,12 +103,29 @@ body {
 }
 
 .glass-card {
+  position: relative;
+  overflow: hidden;
   background: var(--card-bg);
   backdrop-filter: var(--card-blur);
   -webkit-backdrop-filter: var(--card-blur);
   border: 0.5px solid var(--card-border);
   box-shadow: var(--card-shadow);
   border-radius: var(--card-radius);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255,255,255,0.28), transparent 42%, rgba(59,108,181,0.05));
+  border-radius: inherit;
+}
+
+.glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.72);
+  box-shadow: inset 0 0.5px 0 rgba(255,255,255,0.75), 0 18px 38px rgba(59,108,181,0.1), 0 3px 12px rgba(30,42,58,0.05);
 }
 
 .glass-card-sm {
