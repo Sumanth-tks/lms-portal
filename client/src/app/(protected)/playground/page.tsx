@@ -45,8 +45,8 @@ export default function PlaygroundPage() {
     <div>
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Code Playground</h1>
-          <p className="mt-1 text-sm text-gray-500">Write and run Python or SQL code</p>
+          <h1 className="text-2xl font-bold text-[var(--slate-800)]">Code Playground</h1>
+          <p className="mt-1 text-sm text-[var(--slate-400)]">Write and run Python or SQL code</p>
         </div>
         <div className="flex items-center gap-2">
           <select
@@ -57,21 +57,21 @@ export default function PlaygroundPage() {
               setCode(TEMPLATES[lang]);
               setOutput(null);
             }}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+            className="rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm"
           >
             <option value="python">Python</option>
             <option value="sql">SQL</option>
           </select>
           <button
             onClick={handleReset}
-            className="flex items-center gap-1 rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
+            className="flex items-center gap-1 rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm text-[var(--slate-500)] hover:bg-[var(--slate-50)]"
           >
             <RotateCcw className="h-4 w-4" /> Reset
           </button>
           <button
             onClick={handleRun}
             disabled={running || !code.trim()}
-            className="flex items-center gap-2 rounded-lg bg-green-600 px-5 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+            className="flex items-center gap-2 rounded-lg bg-[var(--sage-500)] px-5 py-2 text-sm font-semibold text-white hover:bg-[var(--sage-600)] disabled:opacity-50"
           >
             <Play className="h-4 w-4" /> {running ? 'Running...' : 'Run'}
           </button>
@@ -80,33 +80,33 @@ export default function PlaygroundPage() {
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* Editor */}
-        <div className="rounded-xl border border-gray-200 bg-white">
-          <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-            <span className="text-sm font-medium text-gray-600">
+        <div className="glass-card">
+          <div className="flex items-center justify-between border-b border-[var(--card-border)] px-4 py-3">
+            <span className="text-sm font-medium text-[var(--slate-500)]">
               {language === 'python' ? 'main.py' : 'query.sql'}
             </span>
-            <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500">
+            <span className="rounded-full bg-[var(--slate-50)] px-2 py-0.5 text-xs text-[var(--slate-400)]">
               {language.toUpperCase()}
             </span>
           </div>
           <textarea
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            className="h-[500px] w-full resize-none border-none bg-gray-950 px-4 py-3 font-mono text-sm text-green-400 outline-none"
+            className="h-[500px] w-full resize-none border-none bg-[var(--slate-800)] px-4 py-3 font-mono text-sm text-[var(--sage-500)] outline-none"
             spellCheck={false}
           />
         </div>
 
         {/* Output */}
-        <div className="rounded-xl border border-gray-200 bg-white">
-          <div className="flex items-center border-b border-gray-200 px-4 py-3">
-            <span className="text-sm font-medium text-gray-600">Output</span>
+        <div className="glass-card">
+          <div className="flex items-center border-b border-[var(--card-border)] px-4 py-3">
+            <span className="text-sm font-medium text-[var(--slate-500)]">Output</span>
           </div>
-          <div className="h-[500px] overflow-auto bg-gray-950 px-4 py-3">
+          <div className="h-[500px] overflow-auto bg-[var(--slate-800)] px-4 py-3">
             {output ? (
-              <pre className="whitespace-pre-wrap font-mono text-sm text-gray-300">{output}</pre>
+              <pre className="whitespace-pre-wrap font-mono text-sm text-[var(--slate-200)]">{output}</pre>
             ) : (
-              <p className="font-mono text-sm text-gray-600">Click Run to execute your code...</p>
+              <p className="font-mono text-sm text-[var(--slate-500)]">Click Run to execute your code...</p>
             )}
           </div>
         </div>

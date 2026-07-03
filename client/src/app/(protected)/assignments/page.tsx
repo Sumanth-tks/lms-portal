@@ -52,15 +52,15 @@ export default function AssignmentsPage() {
     const dl = new Date(deadline);
     const diff = dl.getTime() - now.getTime();
     const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-    if (days < 0) return { label: 'Closed', color: 'text-red-500', icon: AlertCircle };
+    if (days < 0) return { label: 'Closed', color: 'text-[var(--rose-500)]', icon: AlertCircle };
     if (days <= 2) return { label: `${days}d left`, color: 'text-orange-500', icon: Clock };
-    return { label: `${days}d left`, color: 'text-green-500', icon: CheckCircle };
+    return { label: `${days}d left`, color: 'text-[var(--sage-500)]', icon: CheckCircle };
   }
 
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--primary-400)] border-t-transparent" />
       </div>
     );
   }
@@ -69,13 +69,13 @@ export default function AssignmentsPage() {
     <div>
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Assignments</h1>
-          <p className="mt-1 text-sm text-gray-500">{assignments.length} assignments</p>
+          <h1 className="text-2xl font-bold text-[var(--slate-800)]">Assignments</h1>
+          <p className="mt-1 text-sm text-[var(--slate-400)]">{assignments.length} assignments</p>
         </div>
         {user?.role !== 'INTERN' && (
           <button
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+            className="flex items-center gap-2 rounded-lg bg-[var(--primary-400)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--primary-600)]"
           >
             <Plus className="h-4 w-4" />
             Create Assignment
@@ -84,89 +84,89 @@ export default function AssignmentsPage() {
       </div>
 
       {showForm && (
-        <form onSubmit={handleCreate} className="mb-6 rounded-xl border border-gray-200 bg-white p-6">
+        <form onSubmit={handleCreate} className="mb-6 glass-card p-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700">Title</label>
+              <label className="text-sm font-medium text-[var(--slate-600)]">Title</label>
               <input
                 type="text"
                 placeholder="e.g. Week 1 Python Exercise"
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
-                className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+                className="rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm"
                 required
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700">Max Score (total points)</label>
+              <label className="text-sm font-medium text-[var(--slate-600)]">Max Score (total points)</label>
               <input
                 type="number"
                 placeholder="100"
                 value={form.maxScore}
                 onChange={(e) => setForm({ ...form, maxScore: Number(e.target.value) })}
-                className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+                className="rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm"
                 required
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700">Deadline (due date &amp; time)</label>
+              <label className="text-sm font-medium text-[var(--slate-600)]">Deadline (due date &amp; time)</label>
               <input
                 type="datetime-local"
                 value={form.deadline}
                 onChange={(e) => setForm({ ...form, deadline: e.target.value })}
-                className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+                className="rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm"
                 required
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700">Allowed File Types</label>
+              <label className="text-sm font-medium text-[var(--slate-600)]">Allowed File Types</label>
               <input
                 type="text"
                 placeholder=".py,.ipynb,.pdf"
                 value={form.fileTypes}
                 onChange={(e) => setForm({ ...form, fileTypes: e.target.value })}
-                className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+                className="rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm"
               />
             </div>
           </div>
           <div className="mt-4 flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">Description (instructions for students)</label>
+            <label className="text-sm font-medium text-[var(--slate-600)]">Description (instructions for students)</label>
             <textarea
               placeholder="Describe what students need to do..."
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+              className="w-full rounded-lg border border-[var(--slate-200)] px-4 py-2.5 text-sm"
               rows={3}
               required
             />
           </div>
           <div className="mt-4 flex items-center gap-6">
-            <label className="flex items-center gap-2 text-sm text-gray-700">
+            <label className="flex items-center gap-2 text-sm text-[var(--slate-600)]">
               <input
                 type="checkbox"
                 checked={form.allowResubmit}
                 onChange={(e) => setForm({ ...form, allowResubmit: e.target.checked })}
-                className="rounded border-gray-300"
+                className="rounded border-[var(--slate-200)]"
               />
               Allow resubmit
             </label>
-            <label className="flex items-center gap-2 text-sm text-gray-700">
+            <label className="flex items-center gap-2 text-sm text-[var(--slate-600)]">
               <input
                 type="checkbox"
                 checked={form.isMiniProject}
                 onChange={(e) => setForm({ ...form, isMiniProject: e.target.checked })}
-                className="rounded border-gray-300"
+                className="rounded border-[var(--slate-200)]"
               />
               Mini Project
             </label>
             {form.allowResubmit && (
-              <label className="flex items-center gap-2 text-sm text-gray-700">
+              <label className="flex items-center gap-2 text-sm text-[var(--slate-600)]">
                 Max resubmits:
                 <input
                   type="number"
                   value={form.maxResubmits}
                   onChange={(e) => setForm({ ...form, maxResubmits: Number(e.target.value) })}
-                  className="w-16 rounded-lg border border-gray-300 px-2 py-1 text-sm"
+                  className="w-16 rounded-lg border border-[var(--slate-200)] px-2 py-1 text-sm"
                   min={1}
                 />
               </label>
@@ -175,7 +175,7 @@ export default function AssignmentsPage() {
           <button
             type="submit"
             disabled={creating}
-            className="mt-4 rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+            className="mt-4 rounded-lg bg-[var(--primary-400)] px-6 py-2 text-sm font-medium text-white hover:bg-[var(--primary-600)] disabled:opacity-50"
           >
             {creating ? 'Creating...' : 'Create'}
           </button>
@@ -190,33 +190,33 @@ export default function AssignmentsPage() {
             <Link
               key={a.id}
               href={`/assignments/${a.id}`}
-              className="flex items-center justify-between rounded-xl border border-gray-200 bg-white p-5 transition hover:shadow-md"
+              className="flex items-center justify-between glass-card p-5 transition hover:shadow-md"
             >
               <div className="flex items-center gap-4">
-                <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${a.isMiniProject ? 'bg-purple-50' : 'bg-blue-50'}`}>
-                  <FileText className={`h-6 w-6 ${a.isMiniProject ? 'text-purple-600' : 'text-blue-600'}`} />
+                <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${a.isMiniProject ? 'bg-[var(--rose-50)]' : 'bg-[var(--primary-50)]'}`}>
+                  <FileText className={`h-6 w-6 ${a.isMiniProject ? 'text-purple-600' : 'text-[var(--primary-400)]'}`} />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
                     {a.isMiniProject && (
-                      <span className="rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-700">
+                      <span className="rounded-full bg-[var(--rose-50)] px-2 py-0.5 text-xs font-medium text-[var(--rose-500)]">
                         Mini Project
                       </span>
                     )}
                     {a.module?.course && (
-                      <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
+                      <span className="rounded-full bg-[var(--slate-50)] px-2 py-0.5 text-xs font-medium text-[var(--slate-500)]">
                         Week {a.module.course.weekNumber}
                       </span>
                     )}
                   </div>
-                  <h3 className="mt-1 text-sm font-semibold text-gray-900">{a.title}</h3>
-                  <p className="mt-0.5 text-xs text-gray-500">
+                  <h3 className="mt-1 text-sm font-semibold text-[var(--slate-800)]">{a.title}</h3>
+                  <p className="mt-0.5 text-xs text-[var(--slate-400)]">
                     Max: {a.maxScore} pts &middot; Due: {new Date(a.deadline).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-[var(--slate-300)]">
                   {a._count?.submissions || 0} submissions
                 </span>
                 <div className={`flex items-center gap-1 ${dl.color}`}>
@@ -228,7 +228,7 @@ export default function AssignmentsPage() {
           );
         })}
         {assignments.length === 0 && (
-          <p className="py-8 text-center text-sm text-gray-400">No assignments yet</p>
+          <p className="py-8 text-center text-sm text-[var(--slate-300)]">No assignments yet</p>
         )}
       </div>
     </div>

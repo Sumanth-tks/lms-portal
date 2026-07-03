@@ -7,9 +7,9 @@ import type { DailyTask, User } from '@/types';
 import { CheckSquare, Plus, Clock, Circle, CheckCircle } from 'lucide-react';
 
 const taskStatusConfig: Record<string, { color: string; icon: typeof Circle }> = {
-  PENDING: { color: 'text-gray-400', icon: Circle },
-  IN_PROGRESS: { color: 'text-blue-500', icon: Clock },
-  COMPLETED: { color: 'text-green-500', icon: CheckCircle },
+  PENDING: { color: 'text-[var(--slate-300)]', icon: Circle },
+  IN_PROGRESS: { color: 'text-[var(--primary-400)]', icon: Clock },
+  COMPLETED: { color: 'text-[var(--sage-500)]', icon: CheckCircle },
 };
 
 export default function TasksPage() {
@@ -83,7 +83,7 @@ export default function TasksPage() {
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--primary-400)] border-t-transparent" />
       </div>
     );
   }
@@ -94,17 +94,17 @@ export default function TasksPage() {
     <div>
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-[var(--slate-800)]">
             {isIntern ? "Today's Tasks" : 'Daily Tasks'}
           </h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-[var(--slate-400)]">
             {completedCount}/{tasks.length} completed
           </p>
         </div>
         {!isIntern && (
           <button
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+            className="flex items-center gap-2 rounded-lg bg-[var(--primary-400)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--primary-600)]"
           >
             <Plus className="h-4 w-4" />
             Assign Task
@@ -120,8 +120,8 @@ export default function TasksPage() {
               onClick={() => loadInternTasks(intern.id)}
               className={`whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition ${
                 selectedIntern === intern.id
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  ? 'bg-[var(--primary-400)] text-white'
+                  : 'bg-[var(--slate-50)] text-[var(--slate-500)] hover:bg-[var(--slate-200)]'
               }`}
             >
               {intern.name}
@@ -131,12 +131,12 @@ export default function TasksPage() {
       )}
 
       {showForm && (
-        <form onSubmit={handleCreate} className="mb-6 rounded-xl border border-gray-200 bg-white p-6">
+        <form onSubmit={handleCreate} className="mb-6 glass-card p-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <select
               value={form.internId}
               onChange={(e) => setForm({ ...form, internId: e.target.value })}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+              className="rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm"
               required
             >
               <option value="">Select Intern</option>
@@ -149,7 +149,7 @@ export default function TasksPage() {
               placeholder="Task title"
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+              className="rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm"
               required
             />
           </div>
@@ -157,13 +157,13 @@ export default function TasksPage() {
             placeholder="Description (optional)"
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
-            className="mt-4 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+            className="mt-4 w-full rounded-lg border border-[var(--slate-200)] px-4 py-2.5 text-sm"
             rows={2}
           />
           <button
             type="submit"
             disabled={creating}
-            className="mt-4 rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+            className="mt-4 rounded-lg bg-[var(--primary-400)] px-6 py-2 text-sm font-medium text-white hover:bg-[var(--primary-600)] disabled:opacity-50"
           >
             {creating ? 'Assigning...' : 'Assign'}
           </button>
@@ -171,9 +171,9 @@ export default function TasksPage() {
       )}
 
       {tasks.length > 0 && (
-        <div className="mb-4 h-2 w-full overflow-hidden rounded-full bg-gray-200">
+        <div className="mb-4 h-2 w-full overflow-hidden rounded-full bg-[var(--slate-200)]">
           <div
-            className="h-full rounded-full bg-blue-600 transition-all"
+            className="h-full rounded-full bg-[var(--primary-400)] transition-all"
             style={{ width: `${tasks.length > 0 ? (completedCount / tasks.length) * 100 : 0}%` }}
           />
         </div>
@@ -186,7 +186,7 @@ export default function TasksPage() {
           return (
             <div
               key={task.id}
-              className={`flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-4 ${
+              className={`flex items-center gap-4 glass-card p-4 ${
                 task.status === 'COMPLETED' ? 'opacity-60' : ''
               }`}
             >
@@ -210,14 +210,14 @@ export default function TasksPage() {
                 <CheckSquare className={`h-5 w-5 flex-shrink-0 ${cfg.color}`} />
               )}
               <div className="flex-1">
-                <p className={`text-sm font-medium ${task.status === 'COMPLETED' ? 'text-gray-400 line-through' : 'text-gray-900'}`}>
+                <p className={`text-sm font-medium ${task.status === 'COMPLETED' ? 'text-[var(--slate-300)] line-through' : 'text-[var(--slate-800)]'}`}>
                   {task.title}
                 </p>
                 {task.description && (
-                  <p className="mt-0.5 text-xs text-gray-500">{task.description}</p>
+                  <p className="mt-0.5 text-xs text-[var(--slate-400)]">{task.description}</p>
                 )}
               </div>
-              <div className="flex items-center gap-2 text-xs text-gray-400">
+              <div className="flex items-center gap-2 text-xs text-[var(--slate-300)]">
                 {task.dueTime && (
                   <span>Due {new Date(task.dueTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                 )}
@@ -227,7 +227,7 @@ export default function TasksPage() {
           );
         })}
         {tasks.length === 0 && (
-          <p className="py-8 text-center text-sm text-gray-400">No tasks assigned for today</p>
+          <p className="py-8 text-center text-sm text-[var(--slate-300)]">No tasks assigned for today</p>
         )}
       </div>
     </div>

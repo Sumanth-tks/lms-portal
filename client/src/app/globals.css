@@ -1,19 +1,15 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --background: #f8f9fb;
-  --foreground: #1e293b;
-}
+  /* Cool Blue Liquid Glass Palette */
+  --background: #E8EEF5;
+  --foreground: #1E2A3A;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+  /* Primary — Blue */
+  --primary-50: #E8F0FE;
+  --primary-100: #C5D8F8;
+  --primary-200: #85B7EB;
+  --primary-300: #5A96D8;
+  --primary-400: #3B6CB5;
+  --primary-500: #3B6
