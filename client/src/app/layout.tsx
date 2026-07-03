@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "LMS - Data Science Residency",
-  description: "Full Stack Data Science Residency Learning Platform",
+  description: "Kantaka Sodhana - Learning Management System",
 };
 
 export default function RootLayout({

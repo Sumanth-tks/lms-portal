@@ -107,7 +107,7 @@ export default function QuizDetailPage() {
   if (loading || !quiz) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--primary-400)] border-t-transparent" />
       </div>
     );
   }
@@ -124,9 +124,9 @@ export default function QuizDetailPage() {
     return (
       <div>
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-gray-900">{quiz.title}</h1>
+          <h1 className="text-xl font-bold text-[var(--slate-800)]">{quiz.title}</h1>
           {timeLeft !== null && (
-            <div className="flex items-center gap-2 rounded-lg bg-red-50 px-4 py-2 text-sm font-mono font-bold text-red-600">
+            <div className="flex items-center gap-2 rounded-lg bg-[var(--rose-50)] px-4 py-2 text-sm font-mono font-bold text-[var(--rose-500)]">
               <Clock className="h-4 w-4" />
               {String(mins).padStart(2, '0')}:{String(secs).padStart(2, '0')}
             </div>
@@ -135,12 +135,12 @@ export default function QuizDetailPage() {
 
         <div className="space-y-6">
           {quiz.questions.map((q, i) => (
-            <div key={q.id} className="rounded-xl border border-gray-200 bg-white p-6">
+            <div key={q.id} className="glass-card p-6">
               <div className="mb-3 flex items-center justify-between">
-                <span className="text-xs font-medium text-gray-400">Question {i + 1}</span>
-                <span className="text-xs text-gray-400">{q.points} pts</span>
+                <span className="text-xs font-medium text-[var(--slate-300)]">Question {i + 1}</span>
+                <span className="text-xs text-[var(--slate-300)]">{q.points} pts</span>
               </div>
-              <p className="mb-4 text-sm font-medium text-gray-900">{q.question}</p>
+              <p className="mb-4 text-sm font-medium text-[var(--slate-800)]">{q.question}</p>
 
               {(q.questionType === 'MCQ_SINGLE' || q.questionType === 'MCQ_MULTI') && q.optionsJson && (
                 <div className="space-y-2">
@@ -149,8 +149,8 @@ export default function QuizDetailPage() {
                       key={j}
                       className={`flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 text-sm transition ${
                         answers[q.id] === opt
-                          ? 'border-blue-500 bg-blue-50 text-blue-700'
-                          : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                          ? 'border-[var(--primary-400)] bg-[var(--primary-50)] text-[var(--primary-600)]'
+                          : 'border-[var(--card-border)] text-[var(--slate-600)] hover:bg-[var(--slate-50)]'
                       }`}
                     >
                       <input
@@ -161,9 +161,9 @@ export default function QuizDetailPage() {
                         className="hidden"
                       />
                       <span className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${
-                        answers[q.id] === opt ? 'border-blue-500 bg-blue-500' : 'border-gray-300'
+                        answers[q.id] === opt ? 'border-[var(--primary-400)] bg-[var(--primary-400)]' : 'border-[var(--slate-200)]'
                       }`}>
-                        {answers[q.id] === opt && <span className="h-2 w-2 rounded-full bg-white" />}
+                        {answers[q.id] === opt && <span className="h-2 w-2 rounded-full bg-[var(--card-bg)]" />}
                       </span>
                       {opt}
                     </label>
@@ -175,7 +175,7 @@ export default function QuizDetailPage() {
                 <textarea
                   value={answers[q.id] || ''}
                   onChange={(e) => setAnswers({ ...answers, [q.id]: e.target.value })}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 font-mono text-sm outline-none focus:border-blue-500"
+                  className="w-full rounded-lg border border-[var(--slate-200)] px-4 py-3 font-mono text-sm outline-none focus:border-[var(--primary-400)]"
                   rows={6}
                   placeholder={q.questionType === 'FREE_TEXT' ? 'Type your answer...' : 'Write your code here...'}
                 />
@@ -188,7 +188,7 @@ export default function QuizDetailPage() {
           <button
             onClick={handleSubmitQuiz}
             disabled={submitting}
-            className="rounded-lg bg-blue-600 px-8 py-3 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+            className="rounded-lg bg-[var(--primary-400)] px-8 py-3 text-sm font-semibold text-white hover:bg-[var(--primary-600)] disabled:opacity-50"
           >
             {submitting ? 'Submitting...' : 'Submit Quiz'}
           </button>
@@ -200,15 +200,15 @@ export default function QuizDetailPage() {
   // Detail view
   return (
     <div>
-      <Link href="/quizzes" className="mb-4 inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700">
+      <Link href="/quizzes" className="mb-4 inline-flex items-center gap-1 text-sm text-[var(--slate-400)] hover:text-[var(--slate-600)]">
         <ArrowLeft className="h-4 w-4" /> Back to Quizzes
       </Link>
 
-      <div className="mb-6 rounded-xl border border-gray-200 bg-white p-6">
+      <div className="mb-6 glass-card p-6">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-xl font-bold text-gray-900">{quiz.title}</h1>
-            <div className="mt-2 flex flex-wrap gap-3 text-sm text-gray-500">
+            <h1 className="text-xl font-bold text-[var(--slate-800)]">{quiz.title}</h1>
+            <div className="mt-2 flex flex-wrap gap-3 text-sm text-[var(--slate-400)]">
               <span>Type: {quiz.type}</span>
               <span>Max: {quiz.maxScore} pts</span>
               {quiz.timeLimitMinutes && <span>{quiz.timeLimitMinutes} min</span>}
@@ -220,7 +220,7 @@ export default function QuizDetailPage() {
           {canTake && hasAttemptsLeft && (
             <button
               onClick={startQuiz}
-              className="rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+              className="rounded-lg bg-[var(--primary-400)] px-6 py-2 text-sm font-semibold text-white hover:bg-[var(--primary-600)]"
             >
               {attemptsUsed > 0 ? 'Retake Quiz' : 'Start Quiz'}
             </button>
@@ -230,24 +230,24 @@ export default function QuizDetailPage() {
 
       {/* Mentor: questions + add form */}
       {!isIntern && (
-        <div className="mb-6 rounded-xl border border-gray-200 bg-white">
-          <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
-            <h2 className="text-lg font-semibold text-gray-800">Questions ({quiz.questions?.length || 0})</h2>
+        <div className="mb-6 glass-card">
+          <div className="flex items-center justify-between border-b border-[var(--card-border)] px-6 py-4">
+            <h2 className="text-lg font-semibold text-[var(--slate-700)]">Questions ({quiz.questions?.length || 0})</h2>
             <button
               onClick={() => setShowQForm(!showQForm)}
-              className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
+              className="flex items-center gap-1 text-sm text-[var(--primary-400)] hover:text-[var(--primary-600)]"
             >
               <Plus className="h-4 w-4" /> Add Question
             </button>
           </div>
 
           {showQForm && (
-            <form onSubmit={handleAddQuestion} className="border-b border-gray-200 p-6">
+            <form onSubmit={handleAddQuestion} className="border-b border-[var(--card-border)] p-6">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <select
                   value={qForm.questionType}
                   onChange={(e) => setQForm({ ...qForm, questionType: e.target.value })}
-                  className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+                  className="rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm"
                 >
                   <option value="MCQ_SINGLE">MCQ Single</option>
                   <option value="MCQ_MULTI">MCQ Multi</option>
@@ -260,21 +260,21 @@ export default function QuizDetailPage() {
                   placeholder="Points"
                   value={qForm.points}
                   onChange={(e) => setQForm({ ...qForm, points: Number(e.target.value) })}
-                  className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+                  className="rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm"
                 />
                 <input
                   type="text"
                   placeholder="Correct answer"
                   value={qForm.correctAnswer}
                   onChange={(e) => setQForm({ ...qForm, correctAnswer: e.target.value })}
-                  className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
+                  className="rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm"
                 />
               </div>
               <textarea
                 placeholder="Question text"
                 value={qForm.question}
                 onChange={(e) => setQForm({ ...qForm, question: e.target.value })}
-                className="mt-4 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm"
+                className="mt-4 w-full rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm"
                 rows={2}
                 required
               />
@@ -291,12 +291,12 @@ export default function QuizDetailPage() {
                         opts[i] = e.target.value;
                         setQForm({ ...qForm, options: opts });
                       }}
-                      className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                      className="rounded-lg border border-[var(--slate-200)] px-3 py-2 text-sm"
                     />
                   ))}
                 </div>
               )}
-              <button type="submit" className="mt-4 rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700">
+              <button type="submit" className="mt-4 rounded-lg bg-[var(--primary-400)] px-6 py-2 text-sm font-medium text-white hover:bg-[var(--primary-600)]">
                 Add
               </button>
             </form>
@@ -306,16 +306,16 @@ export default function QuizDetailPage() {
             {(quiz.questions || []).map((q: QuizQuestion, i: number) => (
               <div key={q.id} className="px-6 py-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-400">Q{i + 1} &middot; {q.questionType} &middot; {q.points} pts</span>
+                  <span className="text-xs text-[var(--slate-300)]">Q{i + 1} &middot; {q.questionType} &middot; {q.points} pts</span>
                 </div>
-                <p className="mt-1 text-sm text-gray-900">{q.question}</p>
+                <p className="mt-1 text-sm text-[var(--slate-800)]">{q.question}</p>
                 {q.optionsJson && (
                   <div className="mt-2 flex flex-wrap gap-2">
                     {(q.optionsJson as string[]).map((opt, j) => (
                       <span
                         key={j}
                         className={`rounded-full px-2.5 py-0.5 text-xs ${
-                          opt === q.correctAnswer ? 'bg-green-100 font-medium text-green-700' : 'bg-gray-100 text-gray-600'
+                          opt === q.correctAnswer ? 'bg-[var(--sage-50)] font-medium text-[var(--sage-500)]' : 'bg-[var(--slate-50)] text-[var(--slate-500)]'
                         }`}
                       >
                         {opt}
@@ -330,35 +330,35 @@ export default function QuizDetailPage() {
       )}
 
       {/* Attempts */}
-      <div className="rounded-xl border border-gray-200 bg-white">
-        <h2 className="border-b border-gray-200 px-6 py-4 text-lg font-semibold text-gray-800">
+      <div className="glass-card">
+        <h2 className="border-b border-[var(--card-border)] px-6 py-4 text-lg font-semibold text-[var(--slate-700)]">
           Attempts ({attempts.length})
         </h2>
         <div className="divide-y divide-gray-100">
           {attempts.map((attempt) => (
             <div key={attempt.id} className="flex items-center justify-between px-6 py-4">
               <div>
-                {attempt.intern && <p className="text-sm font-medium text-gray-900">{attempt.intern.name}</p>}
-                <p className="text-xs text-gray-500">
+                {attempt.intern && <p className="text-sm font-medium text-[var(--slate-800)]">{attempt.intern.name}</p>}
+                <p className="text-xs text-[var(--slate-400)]">
                   Attempt #{attempt.attemptNumber} &middot; {attempt.submittedAt ? new Date(attempt.submittedAt).toLocaleString('en-IN') : 'In progress'}
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 {attempt.score !== null && (
-                  <span className="text-lg font-bold text-gray-900">
+                  <span className="text-lg font-bold text-[var(--slate-800)]">
                     {attempt.score}/{attempt.maxScore}
                   </span>
                 )}
                 {attempt.score !== null && attempt.maxScore && (
                   attempt.score / attempt.maxScore >= 0.6
-                    ? <CheckCircle className="h-5 w-5 text-green-500" />
-                    : <XCircle className="h-5 w-5 text-red-500" />
+                    ? <CheckCircle className="h-5 w-5 text-[var(--sage-500)]" />
+                    : <XCircle className="h-5 w-5 text-[var(--rose-500)]" />
                 )}
               </div>
             </div>
           ))}
           {attempts.length === 0 && (
-            <p className="px-6 py-8 text-center text-sm text-gray-400">No attempts yet</p>
+            <p className="px-6 py-8 text-center text-sm text-[var(--slate-300)]">No attempts yet</p>
           )}
         </div>
       </div>

@@ -49,47 +49,47 @@ export default function StandupsPage() {
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--primary-400)] border-t-transparent" />
       </div>
     );
   }
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">
+      <h1 className="mb-6 text-2xl font-bold text-[var(--slate-800)]">
         {isIntern ? 'Daily Standup' : "Today's Standups"}
       </h1>
 
       {isIntern && !hasSubmittedToday && (
-        <form onSubmit={handleSubmit} className="mb-8 rounded-xl border border-gray-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-gray-800">Submit Standup</h2>
+        <form onSubmit={handleSubmit} className="mb-8 glass-card p-6">
+          <h2 className="mb-4 text-lg font-semibold text-[var(--slate-700)]">Submit Standup</h2>
           <div className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">What did you do yesterday?</label>
+              <label className="mb-1.5 block text-sm font-medium text-[var(--slate-600)]">What did you do yesterday?</label>
               <textarea
                 value={form.yesterday}
                 onChange={(e) => setForm({ ...form, yesterday: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                className="w-full rounded-lg border border-[var(--slate-200)] px-4 py-2.5 text-sm outline-none glass-input:focus/20"
                 rows={3}
                 required
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">What will you do today?</label>
+              <label className="mb-1.5 block text-sm font-medium text-[var(--slate-600)]">What will you do today?</label>
               <textarea
                 value={form.today}
                 onChange={(e) => setForm({ ...form, today: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                className="w-full rounded-lg border border-[var(--slate-200)] px-4 py-2.5 text-sm outline-none glass-input:focus/20"
                 rows={3}
                 required
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">Any blockers?</label>
+              <label className="mb-1.5 block text-sm font-medium text-[var(--slate-600)]">Any blockers?</label>
               <textarea
                 value={form.blockers}
                 onChange={(e) => setForm({ ...form, blockers: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                className="w-full rounded-lg border border-[var(--slate-200)] px-4 py-2.5 text-sm outline-none glass-input:focus/20"
                 rows={2}
               />
             </div>
@@ -97,7 +97,7 @@ export default function StandupsPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="mt-4 rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+            className="mt-4 rounded-lg bg-[var(--primary-400)] px-6 py-2 text-sm font-medium text-white hover:bg-[var(--primary-600)] disabled:opacity-50"
           >
             {submitting ? 'Submitting...' : 'Submit Standup'}
           </button>
@@ -105,43 +105,43 @@ export default function StandupsPage() {
       )}
 
       {isIntern && hasSubmittedToday && (
-        <div className="mb-8 rounded-xl border border-green-200 bg-green-50 p-4">
-          <p className="text-sm font-medium text-green-700">Standup submitted for today</p>
+        <div className="mb-8 rounded-xl border border-green-200 bg-[var(--sage-50)] p-4">
+          <p className="text-sm font-medium text-[var(--sage-500)]">Standup submitted for today</p>
         </div>
       )}
 
       <div className="space-y-4">
         {standups.map((standup) => (
-          <div key={standup.id} className="rounded-xl border border-gray-200 bg-white p-5">
+          <div key={standup.id} className="glass-card p-5">
             <div className="mb-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <MessageSquare className="h-4 w-4 text-blue-600" />
+                <MessageSquare className="h-4 w-4 text-[var(--primary-400)]" />
                 {standup.intern && (
-                  <span className="text-sm font-semibold text-gray-900">{standup.intern.name}</span>
+                  <span className="text-sm font-semibold text-[var(--slate-800)]">{standup.intern.name}</span>
                 )}
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-[var(--slate-300)]">
                   {new Date(standup.date).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })}
                 </span>
               </div>
             </div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               <div>
-                <p className="text-xs font-medium uppercase text-gray-400">Yesterday</p>
-                <p className="mt-1 text-sm text-gray-700">{standup.yesterday}</p>
+                <p className="text-xs font-medium uppercase text-[var(--slate-300)]">Yesterday</p>
+                <p className="mt-1 text-sm text-[var(--slate-600)]">{standup.yesterday}</p>
               </div>
               <div>
-                <p className="text-xs font-medium uppercase text-gray-400">Today</p>
-                <p className="mt-1 text-sm text-gray-700">{standup.today}</p>
+                <p className="text-xs font-medium uppercase text-[var(--slate-300)]">Today</p>
+                <p className="mt-1 text-sm text-[var(--slate-600)]">{standup.today}</p>
               </div>
               <div>
-                <p className="text-xs font-medium uppercase text-gray-400">Blockers</p>
-                <p className="mt-1 text-sm text-gray-700">{standup.blockers || 'None'}</p>
+                <p className="text-xs font-medium uppercase text-[var(--slate-300)]">Blockers</p>
+                <p className="mt-1 text-sm text-[var(--slate-600)]">{standup.blockers || 'None'}</p>
               </div>
             </div>
           </div>
         ))}
         {standups.length === 0 && (
-          <p className="py-8 text-center text-sm text-gray-400">No standups yet</p>
+          <p className="py-8 text-center text-sm text-[var(--slate-300)]">No standups yet</p>
         )}
       </div>
     </div>

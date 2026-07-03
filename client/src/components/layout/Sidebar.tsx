@@ -7,8 +7,6 @@ import {
   BookOpen,
   Users,
   LayoutDashboard,
-  Lock,
-  FolderOpen,
   LogOut,
   GraduationCap,
   ClipboardCheck,
@@ -19,12 +17,10 @@ import {
   FileText,
   Brain,
   GitBranch,
-  Code,
   Briefcase,
   Trophy,
   Rocket,
   TrendingUp,
-  Award,
   Bell,
   Settings,
 } from 'lucide-react';
@@ -97,13 +93,34 @@ export default function Sidebar() {
   const items = menuItems[user.role] || [];
 
   return (
-    <aside className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col border-r border-blue-100 bg-white">
-      <div className="flex h-16 shrink-0 items-center gap-2 border-b border-blue-100 px-6">
-        <GraduationCap className="h-7 w-7 text-blue-600" />
-        <span className="text-lg font-bold text-gray-800">LMS Platform</span>
+    <aside
+      className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col"
+      style={{
+        background: 'rgba(255, 255, 255, 0.45)',
+        backdropFilter: 'blur(40px) saturate(1.8)',
+        WebkitBackdropFilter: 'blur(40px) saturate(1.8)',
+        borderRight: '0.5px solid rgba(255, 255, 255, 0.55)',
+        boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.6), 2px 0 12px rgba(0,0,0,0.04)',
+      }}
+    >
+      <div
+        className="flex h-16 shrink-0 items-center gap-2.5 px-6"
+        style={{ borderBottom: '0.5px solid rgba(0, 0, 0, 0.06)' }}
+      >
+        <div
+          className="flex h-8 w-8 items-center justify-center rounded-lg"
+          style={{
+            background: 'rgba(59, 108, 181, 0.18)',
+            border: '0.5px solid rgba(59, 108, 181, 0.1)',
+            boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.3)',
+          }}
+        >
+          <GraduationCap className="h-5 w-5 text-[var(--primary-600)]" />
+        </div>
+        <span className="text-[15px] font-semibold text-[var(--slate-700)]">Kantaka Sodhana</span>
       </div>
 
-      <nav className="flex flex-1 flex-col gap-1 overflow-y-auto p-4">
+      <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-4">
         {items.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href;
@@ -111,32 +128,12 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+              className={`flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium transition-colors ${
                 active
-                  ? 'bg-blue-50 text-blue-700'
-                  : 'text-gray-600 hover:bg-gray-100'
+                  ? 'text-[var(--primary-600)]'
+                  : 'text-[var(--slate-500)] hover:text-[var(--slate-700)]'
               }`}
-            >
-              <Icon className="h-5 w-5" />
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
-
-      <div className="shrink-0 border-t border-blue-100 p-4">
-        <div className="mb-3 px-3">
-          <p className="text-sm font-medium text-gray-800">{user.name}</p>
-          <p className="text-xs text-gray-500">{user.role}</p>
-        </div>
-        <button
-          onClick={() => logout()}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50"
-        >
-          <LogOut className="h-5 w-5" />
-          Logout
-        </button>
-      </div>
-    </aside>
-  );
-}
+              style={
+                active
+                  ? {
+                      background: 'rgba(59, 1

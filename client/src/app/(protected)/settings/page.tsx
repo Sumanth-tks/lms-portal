@@ -37,68 +37,68 @@ export default function SettingsPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">Settings</h1>
+      <h1 className="mb-6 text-2xl font-bold text-[var(--slate-800)]">Settings</h1>
 
-      <div className="mb-6 flex gap-1 rounded-xl bg-gray-100 p-1" style={{ maxWidth: 300 }}>
-        <button onClick={() => setTab('profile')} className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium ${tab === 'profile' ? 'bg-white text-blue-700 shadow-sm' : 'text-gray-500'}`}>
+      <div className="mb-6 flex gap-1 rounded-xl bg-[var(--slate-50)] p-1" style={{ maxWidth: 300 }}>
+        <button onClick={() => setTab('profile')} className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium ${tab === 'profile' ? 'bg-[var(--card-bg)] text-[var(--primary-600)] shadow-sm' : 'text-[var(--slate-400)]'}`}>
           <User className="h-4 w-4" /> Profile
         </button>
-        <button onClick={() => setTab('password')} className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium ${tab === 'password' ? 'bg-white text-blue-700 shadow-sm' : 'text-gray-500'}`}>
+        <button onClick={() => setTab('password')} className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium ${tab === 'password' ? 'bg-[var(--card-bg)] text-[var(--primary-600)] shadow-sm' : 'text-[var(--slate-400)]'}`}>
           <Lock className="h-4 w-4" /> Password
         </button>
       </div>
 
       {tab === 'profile' && (
-        <div className="rounded-xl border border-gray-200 bg-white p-6">
+        <div className="glass-card p-6">
           <div className="flex items-center gap-6">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-100 text-2xl font-bold text-blue-600">
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[var(--primary-50)] text-2xl font-bold text-[var(--primary-400)]">
               {user?.name?.charAt(0).toUpperCase()}
             </div>
             <div>
-              <h2 className="text-lg font-bold text-gray-900">{user?.name}</h2>
-              <p className="text-sm text-gray-500">{user?.email}</p>
+              <h2 className="text-lg font-bold text-[var(--slate-800)]">{user?.name}</h2>
+              <p className="text-sm text-[var(--slate-400)]">{user?.email}</p>
               <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
-                user?.role === 'ADMIN' ? 'bg-red-100 text-red-700' :
-                user?.role === 'MENTOR' ? 'bg-blue-100 text-blue-700' :
-                'bg-green-100 text-green-700'
+                user?.role === 'ADMIN' ? 'bg-[var(--rose-50)] text-[var(--rose-500)]' :
+                user?.role === 'MENTOR' ? 'bg-[var(--primary-50)] text-[var(--primary-600)]' :
+                'bg-[var(--sage-50)] text-[var(--sage-500)]'
               }`}>{user?.role}</span>
             </div>
           </div>
           <div className="mt-6 grid grid-cols-2 gap-4">
-            <div className="rounded-lg bg-gray-50 px-4 py-3">
-              <p className="text-xs text-gray-400">Status</p>
-              <p className="text-sm font-medium text-gray-700">{user?.status}</p>
+            <div className="rounded-lg bg-[var(--slate-50)] px-4 py-3">
+              <p className="text-xs text-[var(--slate-300)]">Status</p>
+              <p className="text-sm font-medium text-[var(--slate-600)]">{user?.status}</p>
             </div>
-            <div className="rounded-lg bg-gray-50 px-4 py-3">
-              <p className="text-xs text-gray-400">Member since</p>
-              <p className="text-sm font-medium text-gray-700">{user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN') : 'N/A'}</p>
+            <div className="rounded-lg bg-[var(--slate-50)] px-4 py-3">
+              <p className="text-xs text-[var(--slate-300)]">Member since</p>
+              <p className="text-sm font-medium text-[var(--slate-600)]">{user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN') : 'N/A'}</p>
             </div>
           </div>
         </div>
       )}
 
       {tab === 'password' && (
-        <form onSubmit={handlePasswordChange} className="max-w-md rounded-xl border border-gray-200 bg-white p-6">
+        <form onSubmit={handlePasswordChange} className="max-w-md glass-card p-6">
           {message && (
-            <div className={`mb-4 rounded-lg px-4 py-3 text-sm ${message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+            <div className={`mb-4 rounded-lg px-4 py-3 text-sm ${message.type === 'success' ? 'bg-[var(--sage-50)] text-[var(--sage-500)]' : 'bg-[var(--rose-50)] text-[var(--rose-500)]'}`}>
               {message.text}
             </div>
           )}
           <div className="space-y-4">
             <div>
-              <label className="mb-1 block text-xs text-gray-500">Current Password</label>
-              <input type="password" value={passwordForm.currentPassword} onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm" required />
+              <label className="mb-1 block text-xs text-[var(--slate-400)]">Current Password</label>
+              <input type="password" value={passwordForm.currentPassword} onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })} className="w-full rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm" required />
             </div>
             <div>
-              <label className="mb-1 block text-xs text-gray-500">New Password</label>
-              <input type="password" value={passwordForm.newPassword} onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm" required />
+              <label className="mb-1 block text-xs text-[var(--slate-400)]">New Password</label>
+              <input type="password" value={passwordForm.newPassword} onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })} className="w-full rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm" required />
             </div>
             <div>
-              <label className="mb-1 block text-xs text-gray-500">Confirm New Password</label>
-              <input type="password" value={passwordForm.confirmPassword} onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm" required />
+              <label className="mb-1 block text-xs text-[var(--slate-400)]">Confirm New Password</label>
+              <input type="password" value={passwordForm.confirmPassword} onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })} className="w-full rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm" required />
             </div>
           </div>
-          <button type="submit" className="mt-6 flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700">
+          <button type="submit" className="mt-6 flex items-center gap-2 rounded-lg bg-[var(--primary-400)] px-6 py-2 text-sm font-medium text-white hover:bg-[var(--primary-600)]">
             <Save className="h-4 w-4" /> Change Password
           </button>
         </form>

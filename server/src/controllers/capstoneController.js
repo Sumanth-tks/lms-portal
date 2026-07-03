@@ -105,13 +105,4 @@ async function evaluateCapstone(req, res) {
           message: `Your capstone project has been evaluated. Score: ${req.body.finalScore}`,
           link: '/capstone',
         },
-      });
-    }
-
-    res.json({ success: true, data: updated });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
-}
-
-module.exports = { createCapstone, listCapstones, getCapstone, updateCapstone, evaluateCapstone };
+      })

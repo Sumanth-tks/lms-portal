@@ -115,7 +115,7 @@ export default function ProgressPage() {
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--primary-400)] border-t-transparent" />
       </div>
     );
   }
@@ -131,11 +131,11 @@ export default function ProgressPage() {
     <div>
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Progress & Evaluation</h1>
-          <p className="mt-1 text-sm text-gray-500">Track performance and growth</p>
+          <h1 className="text-2xl font-bold text-[var(--slate-800)]">Progress & Evaluation</h1>
+          <p className="mt-1 text-sm text-[var(--slate-400)]">Track performance and growth</p>
         </div>
         {!isIntern && (
-          <select value={selectedIntern} onChange={(e) => { setSelectedIntern(e.target.value); }} className="rounded-lg border border-gray-300 px-3 py-2 text-sm">
+          <select value={selectedIntern} onChange={(e) => { setSelectedIntern(e.target.value); }} className="rounded-lg border border-[var(--slate-200)] px-3 py-2 text-sm">
             <option value="">All Interns</option>
             {interns.map((i) => <option key={i.id} value={i.id}>{i.name}</option>)}
           </select>
@@ -143,11 +143,11 @@ export default function ProgressPage() {
       </div>
 
       {/* Tabs */}
-      <div className="mb-6 flex gap-1 rounded-xl bg-gray-100 p-1">
+      <div className="mb-6 flex gap-1 rounded-xl bg-[var(--slate-50)] p-1">
         {tabs.map((t) => {
           const Icon = t.icon;
           return (
-            <button key={t.key} onClick={() => setTab(t.key)} className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${tab === t.key ? 'bg-white text-blue-700 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
+            <button key={t.key} onClick={() => setTab(t.key)} className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${tab === t.key ? 'bg-[var(--card-bg)] text-[var(--primary-600)] shadow-sm' : 'text-[var(--slate-400)] hover:text-[var(--slate-600)]'}`}>
               <Icon className="h-4 w-4" /> {t.label}
             </button>
           );
@@ -165,19 +165,19 @@ export default function ProgressPage() {
           </div>
 
           {recentEvals.length > 0 && (
-            <div className="mb-6 rounded-xl border border-gray-200 bg-white p-6">
-              <h2 className="mb-4 text-base font-semibold text-gray-800">Recent Evaluations</h2>
+            <div className="mb-6 glass-card p-6">
+              <h2 className="mb-4 text-base font-semibold text-[var(--slate-700)]">Recent Evaluations</h2>
               <div className="space-y-3">
                 {recentEvals.map((ev) => (
-                  <div key={ev.id} className="flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3">
+                  <div key={ev.id} className="flex items-center justify-between rounded-lg bg-[var(--slate-50)] px-4 py-3">
                     <div>
-                      <span className="text-sm font-medium text-gray-900">Week {ev.weekNumber}</span>
-                      <span className="ml-2 text-xs text-gray-400">by {ev.mentor?.name}</span>
+                      <span className="text-sm font-medium text-[var(--slate-800)]">Week {ev.weekNumber}</span>
+                      <span className="ml-2 text-xs text-[var(--slate-300)]">by {ev.mentor?.name}</span>
                     </div>
                     <div className="flex gap-3 text-xs">
-                      <span className="rounded-full bg-blue-100 px-2 py-0.5 text-blue-700">Tech: {ev.technicalScore}</span>
-                      <span className="rounded-full bg-green-100 px-2 py-0.5 text-green-700">Soft: {ev.softSkillScore}</span>
-                      <span className="rounded-full bg-purple-100 px-2 py-0.5 text-purple-700">Overall: {ev.overallScore}</span>
+                      <span className="rounded-full bg-[var(--primary-50)] px-2 py-0.5 text-[var(--primary-600)]">Tech: {ev.technicalScore}</span>
+                      <span className="rounded-full bg-[var(--sage-50)] px-2 py-0.5 text-[var(--sage-500)]">Soft: {ev.softSkillScore}</span>
+                      <span className="rounded-full bg-[var(--rose-50)] px-2 py-0.5 text-[var(--rose-500)]">Overall: {ev.overallScore}</span>
                     </div>
                   </div>
                 ))}
@@ -186,16 +186,16 @@ export default function ProgressPage() {
           )}
 
           {recentPeerReviews.length > 0 && (
-            <div className="rounded-xl border border-gray-200 bg-white p-6">
-              <h2 className="mb-4 text-base font-semibold text-gray-800">Recent Peer Reviews</h2>
+            <div className="glass-card p-6">
+              <h2 className="mb-4 text-base font-semibold text-[var(--slate-700)]">Recent Peer Reviews</h2>
               <div className="space-y-3">
                 {recentPeerReviews.map((pr) => (
-                  <div key={pr.id} className="rounded-lg bg-gray-50 px-4 py-3">
+                  <div key={pr.id} className="rounded-lg bg-[var(--slate-50)] px-4 py-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-900">Week {pr.weekNumber} — by {pr.reviewer?.name}</span>
+                      <span className="text-sm font-medium text-[var(--slate-800)]">Week {pr.weekNumber} — by {pr.reviewer?.name}</span>
                     </div>
-                    {pr.strengths && <p className="mt-1 text-xs text-green-600">Strengths: {pr.strengths}</p>}
-                    {pr.improvements && <p className="mt-0.5 text-xs text-amber-600">Improve: {pr.improvements}</p>}
+                    {pr.strengths && <p className="mt-1 text-xs text-[var(--sage-500)]">Strengths: {pr.strengths}</p>}
+                    {pr.improvements && <p className="mt-0.5 text-xs text-[var(--gold-500)]">Improve: {pr.improvements}</p>}
                   </div>
                 ))}
               </div>
@@ -208,55 +208,55 @@ export default function ProgressPage() {
       {tab === 'peer-reviews' && (
         <div>
           <div className="mb-4 flex justify-end">
-            <button onClick={() => setShowPeerForm(!showPeerForm)} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+            <button onClick={() => setShowPeerForm(!showPeerForm)} className="rounded-lg bg-[var(--primary-400)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--primary-600)]">
               Write Review
             </button>
           </div>
 
           {showPeerForm && (
-            <form onSubmit={handlePeerReview} className="mb-6 rounded-xl border border-gray-200 bg-white p-6">
+            <form onSubmit={handlePeerReview} className="mb-6 glass-card p-6">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-gray-600">Intern to Review</label>
-                  <select value={peerForm.revieweeId} onChange={(e) => setPeerForm({ ...peerForm, revieweeId: e.target.value })} className="rounded-lg border border-gray-300 px-3 py-2 text-sm" required>
+                  <label className="text-xs font-medium text-[var(--slate-500)]">Intern to Review</label>
+                  <select value={peerForm.revieweeId} onChange={(e) => setPeerForm({ ...peerForm, revieweeId: e.target.value })} className="rounded-lg border border-[var(--slate-200)] px-3 py-2 text-sm" required>
                     <option value="">Select intern...</option>
                     {interns.filter((i) => i.id !== user?.id).map((i) => <option key={i.id} value={i.id}>{i.name}</option>)}
                   </select>
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-gray-600">Week Number (1-14)</label>
-                  <input type="number" placeholder="e.g. 1" value={peerForm.weekNumber} onChange={(e) => setPeerForm({ ...peerForm, weekNumber: Number(e.target.value) })} className="rounded-lg border border-gray-300 px-3 py-2 text-sm" min={1} required />
+                  <label className="text-xs font-medium text-[var(--slate-500)]">Week Number (1-14)</label>
+                  <input type="number" placeholder="e.g. 1" value={peerForm.weekNumber} onChange={(e) => setPeerForm({ ...peerForm, weekNumber: Number(e.target.value) })} className="rounded-lg border border-[var(--slate-200)] px-3 py-2 text-sm" min={1} required />
                 </div>
               </div>
               <div className="mt-4 flex flex-col gap-1">
-                <label className="text-xs font-medium text-gray-600">Strengths Observed</label>
-                <textarea placeholder="What did they do well?" value={peerForm.strengths} onChange={(e) => setPeerForm({ ...peerForm, strengths: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm" rows={2} />
+                <label className="text-xs font-medium text-[var(--slate-500)]">Strengths Observed</label>
+                <textarea placeholder="What did they do well?" value={peerForm.strengths} onChange={(e) => setPeerForm({ ...peerForm, strengths: e.target.value })} className="w-full rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm" rows={2} />
               </div>
               <div className="mt-2 flex flex-col gap-1">
-                <label className="text-xs font-medium text-gray-600">Areas for Improvement</label>
-                <textarea placeholder="What could they improve?" value={peerForm.improvements} onChange={(e) => setPeerForm({ ...peerForm, improvements: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm" rows={2} />
+                <label className="text-xs font-medium text-[var(--slate-500)]">Areas for Improvement</label>
+                <textarea placeholder="What could they improve?" value={peerForm.improvements} onChange={(e) => setPeerForm({ ...peerForm, improvements: e.target.value })} className="w-full rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm" rows={2} />
               </div>
-              <button type="submit" className="mt-4 rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700">Submit Review</button>
+              <button type="submit" className="mt-4 rounded-lg bg-[var(--primary-400)] px-6 py-2 text-sm font-medium text-white hover:bg-[var(--primary-600)]">Submit Review</button>
             </form>
           )}
 
           <div className="space-y-3">
             {peerReviews.map((pr) => (
-              <div key={pr.id} className="rounded-xl border border-gray-200 bg-white p-5">
+              <div key={pr.id} className="glass-card p-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="text-sm font-semibold text-gray-900">{pr.reviewer?.name}</span>
-                    <span className="mx-2 text-gray-300">→</span>
-                    <span className="text-sm text-gray-600">{pr.reviewee?.name}</span>
+                    <span className="text-sm font-semibold text-[var(--slate-800)]">{pr.reviewer?.name}</span>
+                    <span className="mx-2 text-[var(--slate-200)]">→</span>
+                    <span className="text-sm text-[var(--slate-500)]">{pr.reviewee?.name}</span>
                   </div>
-                  <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500">Week {pr.weekNumber}</span>
+                  <span className="rounded-full bg-[var(--slate-50)] px-2 py-0.5 text-xs text-[var(--slate-400)]">Week {pr.weekNumber}</span>
                 </div>
-                {pr.strengths && <p className="mt-2 text-sm text-green-700"><strong>Strengths:</strong> {pr.strengths}</p>}
-                {pr.improvements && <p className="mt-1 text-sm text-amber-700"><strong>Improve:</strong> {pr.improvements}</p>}
-                {pr.assignment && <p className="mt-1 text-xs text-gray-400">Assignment: {pr.assignment.title}</p>}
+                {pr.strengths && <p className="mt-2 text-sm text-[var(--sage-500)]"><strong>Strengths:</strong> {pr.strengths}</p>}
+                {pr.improvements && <p className="mt-1 text-sm text-[var(--gold-500)]"><strong>Improve:</strong> {pr.improvements}</p>}
+                {pr.assignment && <p className="mt-1 text-xs text-[var(--slate-300)]">Assignment: {pr.assignment.title}</p>}
               </div>
             ))}
-            {peerReviews.length === 0 && <p className="py-8 text-center text-sm text-gray-400">No peer reviews yet</p>}
+            {peerReviews.length === 0 && <p className="py-8 text-center text-sm text-[var(--slate-300)]">No peer reviews yet</p>}
           </div>
         </div>
       )}
@@ -266,27 +266,27 @@ export default function ProgressPage() {
         <div>
           <form onSubmit={handleGenerateReport} className="mb-6 flex items-end gap-3">
             {!isIntern && (
-              <select value={reportForm.internId} onChange={(e) => setReportForm({ ...reportForm, internId: e.target.value })} className="rounded-lg border border-gray-300 px-3 py-2 text-sm">
+              <select value={reportForm.internId} onChange={(e) => setReportForm({ ...reportForm, internId: e.target.value })} className="rounded-lg border border-[var(--slate-200)] px-3 py-2 text-sm">
                 <option value="">Myself</option>
                 {interns.map((i) => <option key={i.id} value={i.id}>{i.name}</option>)}
               </select>
             )}
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-gray-600">Week Number (1-14)</label>
-              <input type="number" placeholder="e.g. 3" value={reportForm.weekNumber} onChange={(e) => setReportForm({ ...reportForm, weekNumber: Number(e.target.value) })} className="w-24 rounded-lg border border-gray-300 px-3 py-2 text-sm" min={1} />
+              <label className="text-xs font-medium text-[var(--slate-500)]">Week Number (1-14)</label>
+              <input type="number" placeholder="e.g. 3" value={reportForm.weekNumber} onChange={(e) => setReportForm({ ...reportForm, weekNumber: Number(e.target.value) })} className="w-24 rounded-lg border border-[var(--slate-200)] px-3 py-2 text-sm" min={1} />
             </div>
-            <button type="submit" className="self-end rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">Generate Report</button>
+            <button type="submit" className="self-end rounded-lg bg-[var(--primary-400)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--primary-600)]">Generate Report</button>
           </form>
 
           <div className="space-y-4">
             {allReports.map((r) => (
-              <div key={r.id} className="rounded-xl border border-gray-200 bg-white p-6">
+              <div key={r.id} className="glass-card p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-base font-semibold text-gray-900">Week {r.weekNumber}</h3>
-                    <p className="text-xs text-gray-400">{r.intern?.name} — {new Date(r.createdAt).toLocaleDateString('en-IN')}</p>
+                    <h3 className="text-base font-semibold text-[var(--slate-800)]">Week {r.weekNumber}</h3>
+                    <p className="text-xs text-[var(--slate-300)]">{r.intern?.name} — {new Date(r.createdAt).toLocaleDateString('en-IN')}</p>
                   </div>
-                  {r.overallScore !== null && <span className="text-xl font-bold text-blue-600">{r.overallScore}</span>}
+                  {r.overallScore !== null && <span className="text-xl font-bold text-[var(--primary-400)]">{r.overallScore}</span>}
                 </div>
 
                 <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-5">
@@ -298,7 +298,7 @@ export default function ProgressPage() {
                 </div>
 
                 {r.mentorComments && (
-                  <div className="mt-4 rounded-lg bg-blue-50 px-4 py-3 text-sm text-blue-800">
+                  <div className="mt-4 rounded-lg bg-[var(--primary-50)] px-4 py-3 text-sm text-blue-800">
                     <strong>Mentor:</strong> {r.mentorComments}
                   </div>
                 )}
@@ -307,18 +307,18 @@ export default function ProgressPage() {
                   <div className="mt-3">
                     {commenting === r.id ? (
                       <div className="flex gap-2">
-                        <input type="text" placeholder="Comment..." value={commentForm.mentorComments} onChange={(e) => setCommentForm({ ...commentForm, mentorComments: e.target.value })} className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm" />
-                        <input type="number" placeholder="Score" value={commentForm.overallScore} onChange={(e) => setCommentForm({ ...commentForm, overallScore: Number(e.target.value) })} className="w-20 rounded-lg border border-gray-300 px-3 py-2 text-sm" min={0} max={100} />
-                        <button onClick={() => handleMentorComment(r.id)} className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">Save</button>
+                        <input type="text" placeholder="Comment..." value={commentForm.mentorComments} onChange={(e) => setCommentForm({ ...commentForm, mentorComments: e.target.value })} className="flex-1 rounded-lg border border-[var(--slate-200)] px-3 py-2 text-sm" />
+                        <input type="number" placeholder="Score" value={commentForm.overallScore} onChange={(e) => setCommentForm({ ...commentForm, overallScore: Number(e.target.value) })} className="w-20 rounded-lg border border-[var(--slate-200)] px-3 py-2 text-sm" min={0} max={100} />
+                        <button onClick={() => handleMentorComment(r.id)} className="rounded-lg bg-[var(--primary-400)] px-4 py-2 text-sm text-white hover:bg-[var(--primary-600)]">Save</button>
                       </div>
                     ) : (
-                      <button onClick={() => { setCommenting(r.id); setCommentForm({ mentorComments: '', overallScore: 0 }); }} className="text-xs text-blue-600 hover:text-blue-700">Add Comment</button>
+                      <button onClick={() => { setCommenting(r.id); setCommentForm({ mentorComments: '', overallScore: 0 }); }} className="text-xs text-[var(--primary-400)] hover:text-[var(--primary-600)]">Add Comment</button>
                     )}
                   </div>
                 )}
               </div>
             ))}
-            {allReports.length === 0 && <p className="py-8 text-center text-sm text-gray-400">No weekly reports yet</p>}
+            {allReports.length === 0 && <p className="py-8 text-center text-sm text-[var(--slate-300)]">No weekly reports yet</p>}
           </div>
         </div>
       )}
@@ -328,61 +328,61 @@ export default function ProgressPage() {
         <div>
           {!isIntern && (
             <div className="mb-4 flex justify-end">
-              <button onClick={() => setShowEvalForm(!showEvalForm)} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+              <button onClick={() => setShowEvalForm(!showEvalForm)} className="rounded-lg bg-[var(--primary-400)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--primary-600)]">
                 New Evaluation
               </button>
             </div>
           )}
 
           {showEvalForm && (
-            <form onSubmit={handleEvaluation} className="mb-6 rounded-xl border border-gray-200 bg-white p-6">
+            <form onSubmit={handleEvaluation} className="mb-6 glass-card p-6">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <select value={evalForm.internId} onChange={(e) => setEvalForm({ ...evalForm, internId: e.target.value })} className="rounded-lg border border-gray-300 px-3 py-2 text-sm" required>
+                <select value={evalForm.internId} onChange={(e) => setEvalForm({ ...evalForm, internId: e.target.value })} className="rounded-lg border border-[var(--slate-200)] px-3 py-2 text-sm" required>
                   <option value="">Select intern...</option>
                   {interns.map((i) => <option key={i.id} value={i.id}>{i.name}</option>)}
                 </select>
-                <input type="number" placeholder="Week #" value={evalForm.weekNumber} onChange={(e) => setEvalForm({ ...evalForm, weekNumber: Number(e.target.value) })} className="rounded-lg border border-gray-300 px-3 py-2 text-sm" min={1} required />
+                <input type="number" placeholder="Week #" value={evalForm.weekNumber} onChange={(e) => setEvalForm({ ...evalForm, weekNumber: Number(e.target.value) })} className="rounded-lg border border-[var(--slate-200)] px-3 py-2 text-sm" min={1} required />
               </div>
               <div className="mt-4 grid grid-cols-3 gap-4">
                 <div>
-                  <label className="text-xs text-gray-500">Technical (0-10)</label>
-                  <input type="number" value={evalForm.technicalScore} onChange={(e) => setEvalForm({ ...evalForm, technicalScore: Number(e.target.value) })} className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" min={0} max={10} step={0.5} />
+                  <label className="text-xs text-[var(--slate-400)]">Technical (0-10)</label>
+                  <input type="number" value={evalForm.technicalScore} onChange={(e) => setEvalForm({ ...evalForm, technicalScore: Number(e.target.value) })} className="mt-1 w-full rounded-lg border border-[var(--slate-200)] px-3 py-2 text-sm" min={0} max={10} step={0.5} />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-500">Soft Skills (0-10)</label>
-                  <input type="number" value={evalForm.softSkillScore} onChange={(e) => setEvalForm({ ...evalForm, softSkillScore: Number(e.target.value) })} className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" min={0} max={10} step={0.5} />
+                  <label className="text-xs text-[var(--slate-400)]">Soft Skills (0-10)</label>
+                  <input type="number" value={evalForm.softSkillScore} onChange={(e) => setEvalForm({ ...evalForm, softSkillScore: Number(e.target.value) })} className="mt-1 w-full rounded-lg border border-[var(--slate-200)] px-3 py-2 text-sm" min={0} max={10} step={0.5} />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-500">Attendance (0-10)</label>
-                  <input type="number" value={evalForm.attendanceScore} onChange={(e) => setEvalForm({ ...evalForm, attendanceScore: Number(e.target.value) })} className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" min={0} max={10} step={0.5} />
+                  <label className="text-xs text-[var(--slate-400)]">Attendance (0-10)</label>
+                  <input type="number" value={evalForm.attendanceScore} onChange={(e) => setEvalForm({ ...evalForm, attendanceScore: Number(e.target.value) })} className="mt-1 w-full rounded-lg border border-[var(--slate-200)] px-3 py-2 text-sm" min={0} max={10} step={0.5} />
                 </div>
               </div>
-              <textarea placeholder="Overall feedback..." value={evalForm.feedback} onChange={(e) => setEvalForm({ ...evalForm, feedback: e.target.value })} className="mt-4 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm" rows={2} />
-              <textarea placeholder="Areas of improvement..." value={evalForm.areasOfImprovement} onChange={(e) => setEvalForm({ ...evalForm, areasOfImprovement: e.target.value })} className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm" rows={2} />
-              <button type="submit" className="mt-4 rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700">Submit Evaluation</button>
+              <textarea placeholder="Overall feedback..." value={evalForm.feedback} onChange={(e) => setEvalForm({ ...evalForm, feedback: e.target.value })} className="mt-4 w-full rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm" rows={2} />
+              <textarea placeholder="Areas of improvement..." value={evalForm.areasOfImprovement} onChange={(e) => setEvalForm({ ...evalForm, areasOfImprovement: e.target.value })} className="mt-2 w-full rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm" rows={2} />
+              <button type="submit" className="mt-4 rounded-lg bg-[var(--primary-400)] px-6 py-2 text-sm font-medium text-white hover:bg-[var(--primary-600)]">Submit Evaluation</button>
             </form>
           )}
 
           <div className="space-y-3">
             {evaluations.map((ev) => (
-              <div key={ev.id} className="rounded-xl border border-gray-200 bg-white p-5">
+              <div key={ev.id} className="glass-card p-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="text-sm font-semibold text-gray-900">{ev.intern?.name}</span>
-                    <span className="ml-2 text-xs text-gray-400">Week {ev.weekNumber} — by {ev.mentor?.name}</span>
+                    <span className="text-sm font-semibold text-[var(--slate-800)]">{ev.intern?.name}</span>
+                    <span className="ml-2 text-xs text-[var(--slate-300)]">Week {ev.weekNumber} — by {ev.mentor?.name}</span>
                   </div>
-                  <span className="text-lg font-bold text-blue-600">{ev.overallScore}/10</span>
+                  <span className="text-lg font-bold text-[var(--primary-400)]">{ev.overallScore}/10</span>
                 </div>
                 <div className="mt-3 flex gap-3 text-xs">
-                  <span className="rounded-full bg-blue-100 px-2 py-0.5 text-blue-700">Technical: {ev.technicalScore}</span>
-                  <span className="rounded-full bg-green-100 px-2 py-0.5 text-green-700">Soft Skills: {ev.softSkillScore}</span>
-                  <span className="rounded-full bg-amber-100 px-2 py-0.5 text-amber-700">Attendance: {ev.attendanceScore}</span>
+                  <span className="rounded-full bg-[var(--primary-50)] px-2 py-0.5 text-[var(--primary-600)]">Technical: {ev.technicalScore}</span>
+                  <span className="rounded-full bg-[var(--sage-50)] px-2 py-0.5 text-[var(--sage-500)]">Soft Skills: {ev.softSkillScore}</span>
+                  <span className="rounded-full bg-[var(--gold-50)] px-2 py-0.5 text-[var(--gold-500)]">Attendance: {ev.attendanceScore}</span>
                 </div>
-                {ev.feedback && <p className="mt-3 text-sm text-gray-600">{ev.feedback}</p>}
-                {ev.areasOfImprovement && <p className="mt-1 text-sm text-amber-700"><strong>Improve:</strong> {ev.areasOfImprovement}</p>}
+                {ev.feedback && <p className="mt-3 text-sm text-[var(--slate-500)]">{ev.feedback}</p>}
+                {ev.areasOfImprovement && <p className="mt-1 text-sm text-[var(--gold-500)]"><strong>Improve:</strong> {ev.areasOfImprovement}</p>}
               </div>
             ))}
-            {evaluations.length === 0 && <p className="py-8 text-center text-sm text-gray-400">No evaluations yet</p>}
+            {evaluations.length === 0 && <p className="py-8 text-center text-sm text-[var(--slate-300)]">No evaluations yet</p>}
           </div>
         </div>
       )}
@@ -392,25 +392,25 @@ export default function ProgressPage() {
 
 function StatCard({ label, value, sub, color }: { label: string; value: string; sub: string; color: string }) {
   const colors: Record<string, string> = {
-    blue: 'bg-blue-50 text-blue-700',
-    green: 'bg-green-50 text-green-700',
-    purple: 'bg-purple-50 text-purple-700',
-    amber: 'bg-amber-50 text-amber-700',
+    blue: 'bg-[var(--primary-50)] text-[var(--primary-600)]',
+    green: 'bg-[var(--sage-50)] text-[var(--sage-500)]',
+    purple: 'bg-[var(--rose-50)] text-[var(--rose-500)]',
+    amber: 'bg-[var(--gold-50)] text-[var(--gold-500)]',
   };
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-4">
-      <p className="text-xs font-medium text-gray-400">{label}</p>
-      <p className={`mt-1 text-2xl font-bold ${colors[color]?.split(' ')[1] || 'text-gray-900'}`}>{value}</p>
-      <p className="mt-0.5 text-xs text-gray-400">{sub}</p>
+    <div className="glass-card p-4">
+      <p className="text-xs font-medium text-[var(--slate-300)]">{label}</p>
+      <p className={`mt-1 text-2xl font-bold ${colors[color]?.split(' ')[1] || 'text-[var(--slate-800)]'}`}>{value}</p>
+      <p className="mt-0.5 text-xs text-[var(--slate-300)]">{sub}</p>
     </div>
   );
 }
 
 function MiniStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg bg-gray-50 px-3 py-2 text-center">
-      <p className="text-xs text-gray-400">{label}</p>
-      <p className="text-sm font-bold text-gray-700">{value}</p>
+    <div className="rounded-lg bg-[var(--slate-50)] px-3 py-2 text-center">
+      <p className="text-xs text-[var(--slate-300)]">{label}</p>
+      <p className="text-sm font-bold text-[var(--slate-600)]">{value}</p>
     </div>
   );
 }
