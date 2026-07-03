@@ -1,5 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../config/db');
 
 async function createCapstone(req, res) {
   try {
@@ -69,9 +68,15 @@ async function updateCapstone(req, res) {
       return res.status(403).json({ success: false, error: 'Not your project' });
     }
 
+    const { problemStatement, repoUrl, deployedUrl, phase } = req.body;
     const updated = await prisma.capstoneProject.update({
       where: { id: req.params.id },
-      data: req.body,
+      data: {
+        ...(problemStatement !== undefined && { problemStatement }),
+        ...(repoUrl !== undefined && { repoUrl }),
+        ...(deployedUrl !== undefined && { deployedUrl }),
+        ...(phase !== undefined && { phase }),
+      },
     });
     res.json({ success: true, data: updated });
   } catch (err) {

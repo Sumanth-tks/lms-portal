@@ -1,5 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../config/db');
 
 async function createHackathon(req, res) {
   try {
@@ -37,7 +36,7 @@ async function getHackathon(req, res) {
             intern: { select: { id: true, name: true, email: true } },
             judge: { select: { id: true, name: true } },
           },
-          orderBy: { score: { sort: 'desc', nulls: 'last' } },
+          orderBy: { score: 'desc' },
         },
       },
     });
