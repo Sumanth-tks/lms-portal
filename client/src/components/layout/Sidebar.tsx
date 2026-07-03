@@ -128,7 +128,7 @@ export default function Sidebar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium transition-colors ${
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[rgba(59,108,181,0.28)] ${
                   active
                     ? 'text-[var(--primary-600)]'
                     : 'text-[var(--slate-500)] hover:text-[var(--slate-700)]'
@@ -160,7 +160,7 @@ export default function Sidebar() {
           </div>
           <button
             onClick={() => logout()}
-            className="flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium text-[var(--danger-500)] transition-colors hover:bg-[rgba(181,59,59,0.08)]"
+            className="flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium text-[var(--danger-500)] outline-none transition-colors hover:bg-[rgba(181,59,59,0.08)] focus-visible:ring-2 focus-visible:ring-[rgba(181,59,59,0.18)]"
           >
             <LogOut className="h-5 w-5 shrink-0" />
             <span className="truncate">Logout</span>

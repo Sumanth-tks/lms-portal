@@ -72,21 +72,25 @@ export default function DashboardPage() {
             <StatCard icon={<Users className="h-5 w-5 text-[var(--primary-600)]" />} label="Total Users" value={s.totalUsers as number} colorClass="si-blue" />
             <StatCard icon={<BookOpen className="h-5 w-5 text-[var(--sage-500)]" />} label="Courses" value={s.courses as number} colorClass="si-green" />
             <StatCard icon={<FileText className="h-5 w-5 text-[var(--gold-500)]" />} label="Pending Submissions" value={s.pendingSubmissions as number} colorClass="si-gold" />
+            <StatCard icon={<ClipboardCheck className="h-5 w-5 text-[var(--rose-500)]" />} label="Present Today" value={`${s.presentToday}/${s.totalToday}`} colorClass="si-purple" />
           </div>
-          <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
             <MiniStat label="Admins" value={s.admins as number} />
             <MiniStat label="Mentors" value={s.mentors as number} />
             <MiniStat label="Interns" value={s.interns as number} />
-            <MiniStat label="Present Today" value={`${s.presentToday}/${s.totalToday}`} />
           </div>
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
             <QuickLinks role="ADMIN" />
             {data.recentUsers && (
-              <div className="glass-card p-5">
+              <div className="glass-card min-h-[220px] p-5">
                 <h3 className="mb-3 text-sm font-semibold text-[var(--slate-700)]">Recent Users</h3>
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   {data.recentUsers.map((u) => (
-                    <div key={u.id} className="flex items-center justify-between text-sm">
+                    <div
+                      key={u.id}
+                      className="flex items-center justify-between rounded-lg px-2.5 py-1.5 text-sm"
+                      style={{ background: 'rgba(255,255,255,0.16)' }}
+                    >
                       <span className="text-[var(--slate-600)]">{u.name}</span>
                       <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${u.role === 'ADMIN' ? 'bg-[var(--danger-50)] text-[var(--danger-500)]' : u.role === 'MENTOR' ? 'bg-[var(--primary-50)] text-[var(--primary-600)]' : 'bg-[var(--sage-50)] text-[var(--sage-500)]'}`}>{u.role}</span>
                     </div>
@@ -228,6 +232,7 @@ function QuickLinks({ role }: { role: string }) {
     { href: '/users', label: 'Manage Users', icon: Users },
     { href: '/assignments', label: 'Assignments', icon: FileText },
     { href: '/progress', label: 'Progress Reports', icon: ClipboardCheck },
+    { href: '/hackathons', label: 'Hackathons', icon: Trophy },
   ] : role === 'MENTOR' ? [
     { href: '/assignments', label: 'Grade Work', icon: FileText },
     { href: '/progress', label: 'Student Progress', icon: ClipboardCheck },
@@ -239,7 +244,7 @@ function QuickLinks({ role }: { role: string }) {
   ];
 
   return (
-    <div className="glass-card p-5">
+    <div className="glass-card min-h-[220px] p-5">
       <h3 className="mb-3 text-sm font-semibold text-[var(--slate-700)]">Quick Actions</h3>
       <div className="grid grid-cols-2 gap-2">
         {links.map((l) => {
@@ -248,10 +253,11 @@ function QuickLinks({ role }: { role: string }) {
             <Link
               key={l.href}
               href={l.href}
-              className="flex min-w-0 items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--slate-500)] transition-colors hover:text-[var(--primary-600)]"
+              className="flex min-w-0 items-center gap-2 rounded-lg px-3 py-3 text-sm font-medium text-[var(--slate-500)] outline-none transition hover:-translate-y-0.5 hover:text-[var(--primary-600)] focus-visible:ring-2 focus-visible:ring-[rgba(59,108,181,0.22)]"
               style={{
-                background: 'rgba(255,255,255,0.28)',
-                border: '0.5px solid rgba(255,255,255,0.35)',
+                background: 'rgba(255,255,255,0.32)',
+                border: '0.5px solid rgba(255,255,255,0.42)',
+                boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.4)',
               }}
             >
               <Icon className="h-4 w-4 shrink-0" />
