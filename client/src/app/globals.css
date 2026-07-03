@@ -359,6 +359,39 @@ body {
   box-shadow: inset 0 0.5px 0 rgba(255,255,255,0.3), 0 0 0 3px rgba(59, 108, 181, 0.1);
 }
 
+/* Modal hardening: keep popups glassy without letting page content bleed through. */
+.fixed.inset-0.z-50 {
+  background: rgba(18, 28, 40, 0.56) !important;
+  backdrop-filter: blur(18px) saturate(1.08) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.08) !important;
+}
+
+.fixed.inset-0.z-50 > form,
+.fixed.inset-0.z-50 > div {
+  max-height: calc(100vh - 2rem);
+  overflow: hidden auto;
+  isolation: isolate;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.96), rgba(241,247,255,0.9) 52%, rgba(228,238,250,0.88)),
+    rgba(255,255,255,0.94) !important;
+  border: 0.5px solid rgba(255,255,255,0.82) !important;
+  backdrop-filter: blur(38px) saturate(1.38) !important;
+  -webkit-backdrop-filter: blur(38px) saturate(1.38) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    0 28px 90px rgba(18,28,40,0.34),
+    0 8px 24px rgba(59,108,181,0.12) !important;
+}
+
+.fixed.inset-0.z-50 .glass-input,
+.fixed.inset-0.z-50 .liquid-control,
+.fixed.inset-0.z-50 label[class*="border"] {
+  background: rgba(255,255,255,0.72) !important;
+  border-color: rgba(157,172,192,0.28) !important;
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 6px;
