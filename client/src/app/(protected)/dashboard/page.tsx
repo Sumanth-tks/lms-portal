@@ -126,7 +126,7 @@ export default function DashboardPage() {
               { label: 'Review Load', value: Math.min(100, (((s.pendingSubmissions as number) + (s.pendingReviews as number)) || 0) * 14), detail: `${(s.pendingSubmissions as number) + (s.pendingReviews as number)} queued` },
             ]}
           />
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
             <QuickLinks role="MENTOR" />
             {data.todayAttendance && data.todayAttendance.length > 0 && (
               <div className="liquid-card p-5">
@@ -168,7 +168,7 @@ export default function DashboardPage() {
               { label: 'Daily Tasks', value: percent(s.completedTasks as number, s.todayTasks as number), detail: `${s.completedTasks}/${s.todayTasks}` },
             ]}
           />
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
             <QuickLinks role="INTERN" />
             {data.recentSubmissions && data.recentSubmissions.length > 0 && (
               <div className="liquid-card p-5">
