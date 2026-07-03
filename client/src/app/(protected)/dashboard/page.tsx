@@ -5,8 +5,8 @@ import { useAuthStore } from '@/stores/authStore';
 import api from '@/lib/api';
 import type { Notification as Notif } from '@/types';
 import {
-  BookOpen, Users, FolderOpen, ClipboardCheck, FileText,
-  Brain, GitBranch, Trophy, Zap, Award, Flame, Bell, Check,
+  Activity, ArrowRight, BookOpen, Users, ClipboardCheck, FileText,
+  Brain, GitBranch, Trophy, Bell, Check,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -59,45 +59,39 @@ export default function DashboardPage() {
   const s = data.stats;
 
   return (
-    <div>
-      <h1 className="mb-1 text-2xl font-semibold text-[var(--slate-800)]">Welcome back, {user?.name}</h1>
-      <p className="mb-6 text-sm text-[var(--slate-400)]">
-        {user?.role === 'ADMIN' ? 'Admin Dashboard' : user?.role === 'MENTOR' ? 'Mentor Dashboard' : 'Your Learning Dashboard'}
-      </p>
+    <div className="liquid-enter w-full space-y-6">
+      <header className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-normal text-[var(--slate-800)]">
+            Welcome back, {user?.name}
+          </h1>
+          <p className="mt-1 text-sm text-[var(--slate-400)]">
+            {user?.role === 'ADMIN' ? 'Admin Dashboard' : user?.role === 'MENTOR' ? 'Mentor Dashboard' : 'Your Learning Dashboard'}
+          </p>
+        </div>
+        <div className="liquid-pill hidden items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--slate-500)] sm:flex">
+          <Activity className="h-4 w-4 text-[var(--primary-500)]" />
+          <span>{user?.role} workspace</span>
+        </div>
+      </header>
 
       {/* Admin Dashboard */}
       {user?.role === 'ADMIN' && (
-        <div>
-          <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <StatCard icon={<Users className="h-5 w-5 text-[var(--primary-600)]" />} label="Total Users" value={s.totalUsers as number} colorClass="si-blue" />
-            <StatCard icon={<BookOpen className="h-5 w-5 text-[var(--sage-500)]" />} label="Courses" value={s.courses as number} colorClass="si-green" />
-            <StatCard icon={<FileText className="h-5 w-5 text-[var(--gold-500)]" />} label="Pending Submissions" value={s.pendingSubmissions as number} colorClass="si-gold" />
-            <StatCard icon={<ClipboardCheck className="h-5 w-5 text-[var(--rose-500)]" />} label="Present Today" value={`${s.presentToday}/${s.totalToday}`} colorClass="si-purple" />
+        <div className="space-y-5">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <StatCard delayClass="liquid-stagger-1" icon={<Users className="h-5 w-5 text-[var(--primary-600)]" />} label="Total Users" value={s.totalUsers as number} colorClass="si-blue" />
+            <StatCard delayClass="liquid-stagger-1" icon={<BookOpen className="h-5 w-5 text-[var(--sage-500)]" />} label="Courses" value={s.courses as number} colorClass="si-green" />
+            <StatCard delayClass="liquid-stagger-2" icon={<FileText className="h-5 w-5 text-[var(--gold-500)]" />} label="Pending Submissions" value={s.pendingSubmissions as number} colorClass="si-gold" />
+            <StatCard delayClass="liquid-stagger-2" icon={<ClipboardCheck className="h-5 w-5 text-[var(--rose-500)]" />} label="Present Today" value={`${s.presentToday}/${s.totalToday}`} colorClass="si-purple" />
           </div>
-          <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <MiniStat label="Admins" value={s.admins as number} />
             <MiniStat label="Mentors" value={s.mentors as number} />
             <MiniStat label="Interns" value={s.interns as number} />
           </div>
-          <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(380px,0.86fr)]">
             <QuickLinks role="ADMIN" />
-            {data.recentUsers && (
-              <div className="glass-card min-h-[220px] p-5">
-                <h3 className="mb-3 text-sm font-semibold text-[var(--slate-700)]">Recent Users</h3>
-                <div className="space-y-1.5">
-                  {data.recentUsers.map((u) => (
-                    <div
-                      key={u.id}
-                      className="flex items-center justify-between rounded-lg px-2.5 py-1.5 text-sm"
-                      style={{ background: 'rgba(255,255,255,0.16)' }}
-                    >
-                      <span className="text-[var(--slate-600)]">{u.name}</span>
-                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${u.role === 'ADMIN' ? 'bg-[var(--danger-50)] text-[var(--danger-500)]' : u.role === 'MENTOR' ? 'bg-[var(--primary-50)] text-[var(--primary-600)]' : 'bg-[var(--sage-50)] text-[var(--sage-500)]'}`}>{u.role}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            {data.recentUsers && <RecentUsers users={data.recentUsers} />}
           </div>
         </div>
       )}
@@ -114,7 +108,7 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <QuickLinks role="MENTOR" />
             {data.todayAttendance && data.todayAttendance.length > 0 && (
-              <div className="glass-card p-5">
+              <div className="liquid-card p-5">
                 <h3 className="mb-3 text-sm font-semibold text-[var(--slate-700)]">Today&apos;s Attendance</h3>
                 <div className="space-y-2">
                   {data.todayAttendance.map((a, i) => (
@@ -146,7 +140,7 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <QuickLinks role="INTERN" />
             {data.recentSubmissions && data.recentSubmissions.length > 0 && (
-              <div className="glass-card p-5">
+              <div className="liquid-card p-5">
                 <h3 className="mb-3 text-sm font-semibold text-[var(--slate-700)]">Recent Submissions</h3>
                 <div className="space-y-2">
                   {data.recentSubmissions.map((sub) => (
@@ -166,7 +160,7 @@ export default function DashboardPage() {
 
       {/* Notifications */}
       {data.notifications && data.notifications.length > 0 && (
-        <div className="glass-card mt-6 p-5">
+        <div className="liquid-card p-5">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Bell className="h-5 w-5 text-[var(--slate-400)]" />
@@ -204,25 +198,38 @@ const iconStyles: Record<string, React.CSSProperties> = {
   'si-purple': { background: 'rgba(107,63,160,0.13)', border: '0.5px solid rgba(107,63,160,0.08)', boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.25)' },
 };
 
-function StatCard({ icon, label, value, colorClass }: { icon: React.ReactNode; label: string; value: number | string; colorClass: string }) {
+function StatCard({
+  icon,
+  label,
+  value,
+  colorClass,
+  delayClass = '',
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: number | string;
+  colorClass: string;
+  delayClass?: string;
+}) {
   return (
-    <div className="glass-card p-4">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl" style={iconStyles[colorClass]}>{icon}</div>
-        <div>
-          <p className="text-xl font-semibold leading-tight text-[var(--slate-800)]">{value}</p>
-          <p className="text-xs text-[var(--slate-400)]">{label}</p>
+    <div className={`liquid-card liquid-enter min-h-[112px] p-5 ${delayClass}`}>
+      <div className="flex h-full items-center justify-between gap-4">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl" style={iconStyles[colorClass]}>{icon}</div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-3xl font-semibold leading-none text-[var(--slate-800)]">{value}</p>
+          <p className="mt-2 text-sm leading-snug text-[var(--slate-400)]">{label}</p>
         </div>
       </div>
+      <span className="stat-accent" />
     </div>
   );
 }
 
 function MiniStat({ label, value }: { label: string; value: number | string }) {
   return (
-    <div className="glass-card-sm px-3 py-2.5 text-center">
+    <div className="liquid-pill flex min-h-[74px] flex-col items-center justify-center px-4 py-3 text-center">
       <p className="text-xs text-[var(--slate-400)]">{label}</p>
-      <p className="text-sm font-semibold text-[var(--slate-700)]">{typeof value === 'number' ? value : value}</p>
+      <p className="mt-1 text-base font-semibold leading-tight text-[var(--slate-700)]">{typeof value === 'number' ? value : value}</p>
     </div>
   );
 }
@@ -244,28 +251,60 @@ function QuickLinks({ role }: { role: string }) {
   ];
 
   return (
-    <div className="glass-card min-h-[220px] p-5">
-      <h3 className="mb-3 text-sm font-semibold text-[var(--slate-700)]">Quick Actions</h3>
-      <div className="grid grid-cols-2 gap-2">
+    <div className="liquid-card min-h-[236px] p-5">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <h3 className="text-sm font-semibold text-[var(--slate-700)]">Quick Actions</h3>
+        <span className="rounded-full bg-white/35 px-2.5 py-1 text-xs font-medium text-[var(--slate-400)]">
+          {links.length}
+        </span>
+      </div>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {links.map((l) => {
           const Icon = l.icon;
           return (
             <Link
               key={l.href}
               href={l.href}
-              className="flex min-w-0 items-center gap-2 rounded-lg px-3 py-3 text-sm font-medium text-[var(--slate-500)] outline-none transition hover:-translate-y-0.5 hover:text-[var(--primary-600)] focus-visible:ring-2 focus-visible:ring-[rgba(59,108,181,0.22)]"
-              style={{
-                background: 'rgba(255,255,255,0.32)',
-                border: '0.5px solid rgba(255,255,255,0.42)',
-                boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.4)',
-              }}
+              className="liquid-control group flex min-h-[58px] min-w-0 items-center gap-3 px-3 text-sm font-medium text-[var(--slate-500)] outline-none focus-visible:ring-2 focus-visible:ring-[rgba(59,108,181,0.22)]"
             >
-              <Icon className="h-4 w-4 shrink-0" />
-              <span className="min-w-0 truncate">{l.label}</span>
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/35 text-[var(--primary-500)]">
+                <Icon className="h-4 w-4" />
+              </span>
+              <span className="min-w-0 leading-tight">{l.label}</span>
+              <ArrowRight className="ml-auto h-4 w-4 shrink-0 text-[var(--slate-300)] transition group-hover:translate-x-0.5 group-hover:text-[var(--primary-500)]" />
             </Link>
           );
         })}
       </div>
     </div>
   );
+}
+
+function RecentUsers({ users }: { users: NonNullable<DashboardData['recentUsers']> }) {
+  return (
+    <div className="liquid-card min-h-[236px] p-5">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <h3 className="text-sm font-semibold text-[var(--slate-700)]">Recent Users</h3>
+        <span className="rounded-full bg-white/35 px-2.5 py-1 text-xs font-medium text-[var(--slate-400)]">
+          {users.length}
+        </span>
+      </div>
+      <div className="space-y-2">
+        {users.map((u) => (
+          <div key={u.id} className="liquid-list-row flex items-center justify-between gap-3 px-3 py-2 text-sm">
+            <span className="min-w-0 truncate font-medium text-[var(--slate-600)]">{u.name}</span>
+            <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${roleBadgeClass(u.role)}`}>
+              {u.role}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function roleBadgeClass(role: string) {
+  if (role === 'ADMIN') return 'bg-[var(--danger-50)] text-[var(--danger-500)]';
+  if (role === 'MENTOR') return 'bg-[var(--primary-50)] text-[var(--primary-600)]';
+  return 'bg-[var(--sage-50)] text-[var(--sage-500)]';
 }

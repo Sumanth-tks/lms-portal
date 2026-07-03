@@ -98,46 +98,45 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
   if (!user) return null;
 
   const items = menuItems[user.role] || [];
+  const labelMotion = collapsed
+    ? 'w-0 translate-x-2 opacity-0'
+    : 'w-36 translate-x-0 opacity-100 lg:w-44';
 
   return (
     <aside
-      className={`sticky top-0 flex h-screen shrink-0 p-4 pr-3 transition-[width] duration-300 ease-out ${
-        collapsed ? 'w-[92px]' : 'w-72 lg:w-80'
+      className={`sticky top-0 flex h-screen shrink-0 transition-[width,padding] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        collapsed ? 'w-[88px] p-3 pr-2' : 'w-[292px] p-4 pr-3 lg:w-[316px]'
       }`}
     >
       <div
-        className="glass-panel flex h-[calc(100vh-2rem)] w-full flex-col overflow-hidden"
-        style={{
-          background: 'rgba(255, 255, 255, 0.34)',
-          border: '0.5px solid rgba(255, 255, 255, 0.5)',
-          borderRadius: collapsed ? '20px' : '22px',
-          boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.62), 0 18px 42px rgba(59,108,181,0.1), 0 2px 12px rgba(30,42,58,0.04)',
-        }}
+        className={`liquid-panel flex w-full flex-col transition-[border-radius,box-shadow] duration-500 ${
+          collapsed ? 'h-[calc(100vh-1.5rem)] rounded-[22px]' : 'h-[calc(100vh-2rem)] rounded-[26px]'
+        }`}
       >
         <div
-          className={`flex h-16 shrink-0 items-center gap-2.5 px-3 ${collapsed ? 'justify-center' : ''}`}
+          className={`flex h-[76px] shrink-0 items-center gap-3 ${collapsed ? 'justify-center px-2' : 'px-4'}`}
           style={{ borderBottom: '0.5px solid rgba(0, 0, 0, 0.06)' }}
         >
           <div
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+            className="liquid-control flex h-10 w-10 shrink-0 items-center justify-center"
             style={{
               background: 'rgba(59, 108, 181, 0.18)',
-              border: '0.5px solid rgba(59, 108, 181, 0.1)',
-              boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.3)',
             }}
           >
             <GraduationCap className="h-5 w-5 text-[var(--primary-600)]" />
           </div>
-          {!collapsed && (
-            <span className="truncate text-[15px] font-semibold text-[var(--slate-700)]">Kantaka Sodhana</span>
-          )}
+          <span
+            className={`overflow-hidden whitespace-nowrap text-[15px] font-semibold text-[var(--slate-700)] transition-all duration-300 ${labelMotion}`}
+          >
+            Kantaka Sodhana
+          </span>
           {!collapsed && (
             <button
               type="button"
               onClick={onToggle}
               aria-label="Collapse sidebar"
               title="Collapse sidebar"
-              className="ml-auto flex h-8 w-8 items-center justify-center rounded-lg text-[var(--slate-400)] outline-none transition hover:bg-white/25 hover:text-[var(--primary-600)] focus-visible:ring-2 focus-visible:ring-[rgba(59,108,181,0.28)]"
+              className="liquid-control ml-auto flex h-9 w-9 items-center justify-center text-[var(--slate-400)] outline-none transition hover:text-[var(--primary-600)] focus-visible:ring-2 focus-visible:ring-[rgba(59,108,181,0.28)]"
             >
               <PanelLeftClose className="h-4 w-4" />
             </button>
@@ -151,18 +150,14 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
               onClick={onToggle}
               aria-label="Expand sidebar"
               title="Expand sidebar"
-              className="flex h-10 w-full items-center justify-center rounded-xl text-[var(--primary-600)] outline-none transition hover:bg-white/28 focus-visible:ring-2 focus-visible:ring-[rgba(59,108,181,0.28)]"
-              style={{
-                background: 'rgba(255,255,255,0.2)',
-                border: '0.5px solid rgba(255,255,255,0.35)',
-              }}
+              className="liquid-control flex h-10 w-full items-center justify-center text-[var(--primary-600)] outline-none transition focus-visible:ring-2 focus-visible:ring-[rgba(59,108,181,0.28)]"
             >
               <PanelLeftOpen className="h-4 w-4" />
             </button>
           </div>
         )}
 
-        <nav className={`scrollbar-none flex flex-1 flex-col gap-0.5 overflow-y-auto py-3 ${collapsed ? 'px-2' : 'px-2'}`}>
+        <nav className={`scrollbar-none flex flex-1 flex-col gap-1 overflow-y-auto py-3 ${collapsed ? 'px-2' : 'px-3'}`}>
           {items.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href;
@@ -171,25 +166,21 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 key={item.href}
                 href={item.href}
                 title={collapsed ? item.label : undefined}
-                className={`flex items-center rounded-xl py-2 text-[13px] font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[rgba(59,108,181,0.28)] ${
-                  collapsed ? 'justify-center px-0' : 'gap-3 px-3'
+                aria-label={item.label}
+                className={`sidebar-nav-link flex items-center rounded-2xl py-2.5 text-[13px] font-medium outline-none transition-all duration-200 focus-visible:ring-2 focus-visible:ring-[rgba(59,108,181,0.28)] ${
+                  collapsed ? 'sidebar-nav-link-collapsed justify-center px-0' : 'gap-3 px-3.5'
                 } ${
                   active
-                    ? 'text-[var(--primary-600)]'
-                    : 'text-[var(--slate-500)] hover:text-[var(--slate-700)]'
+                    ? 'sidebar-nav-link-active'
+                    : 'text-[var(--slate-500)] hover:bg-white/25 hover:text-[var(--slate-700)]'
                 }`}
-                style={
-                  active
-                    ? {
-                        background: 'rgba(59, 108, 181, 0.12)',
-                        border: '0.5px solid rgba(59, 108, 181, 0.12)',
-                        boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.25)',
-                      }
-                    : undefined
-                }
               >
                 <Icon className="h-4 w-4 shrink-0" />
-                <span className={collapsed ? 'sr-only' : 'truncate'}>{item.label}</span>
+                <span
+                  className={`min-w-0 overflow-hidden whitespace-nowrap transition-all duration-300 ${labelMotion}`}
+                >
+                  {item.label}
+                </span>
               </Link>
             );
           })}
@@ -200,20 +191,25 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
           style={{ borderTop: '0.5px solid rgba(0, 0, 0, 0.06)' }}
         >
           {!collapsed && (
-            <div className="mb-3 px-2">
+            <div className="liquid-pill mb-3 px-3 py-3">
               <p className="truncate text-sm font-semibold text-[var(--slate-700)]">{user.name}</p>
               <p className="text-xs text-[var(--slate-400)]">{user.role}</p>
             </div>
           )}
           <button
             onClick={() => logout()}
+            aria-label="Logout"
             title={collapsed ? 'Logout' : undefined}
-            className={`flex w-full items-center rounded-xl text-sm font-medium text-[var(--danger-500)] outline-none transition-colors hover:bg-[rgba(181,59,59,0.08)] focus-visible:ring-2 focus-visible:ring-[rgba(181,59,59,0.18)] ${
-              collapsed ? 'justify-center px-0 py-2.5' : 'gap-3 px-2.5 py-2'
+            className={`flex w-full items-center rounded-2xl text-sm font-medium text-[var(--danger-500)] outline-none transition hover:bg-[rgba(181,59,59,0.08)] focus-visible:ring-2 focus-visible:ring-[rgba(181,59,59,0.18)] ${
+              collapsed ? 'justify-center px-0 py-2.5' : 'gap-3 px-3 py-2.5'
             }`}
           >
             <LogOut className="h-5 w-5 shrink-0" />
-            <span className={collapsed ? 'sr-only' : 'truncate'}>Logout</span>
+            <span
+              className={`min-w-0 overflow-hidden whitespace-nowrap transition-all duration-300 ${labelMotion}`}
+            >
+              Logout
+            </span>
           </button>
         </div>
       </div>
