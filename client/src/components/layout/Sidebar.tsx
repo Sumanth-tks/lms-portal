@@ -93,78 +93,79 @@ export default function Sidebar() {
   const items = menuItems[user.role] || [];
 
   return (
-    <aside
-      className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col"
-      style={{
-        background: 'rgba(255, 255, 255, 0.45)',
-        backdropFilter: 'blur(40px) saturate(1.8)',
-        WebkitBackdropFilter: 'blur(40px) saturate(1.8)',
-        borderRight: '0.5px solid rgba(255, 255, 255, 0.55)',
-        boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.6), 2px 0 12px rgba(0,0,0,0.04)',
-      }}
-    >
+    <aside className="flex w-full shrink-0 p-3 pb-0 md:w-[248px] md:p-4 md:pr-2">
       <div
-        className="flex h-16 shrink-0 items-center gap-2.5 px-6"
-        style={{ borderBottom: '0.5px solid rgba(0, 0, 0, 0.06)' }}
+        className="glass-panel flex max-h-[515px] min-h-[220px] w-full flex-col overflow-hidden"
+        style={{
+          background: 'rgba(255, 255, 255, 0.34)',
+          border: '0.5px solid rgba(255, 255, 255, 0.5)',
+          borderRadius: '18px',
+          boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.55), 0 1px 8px rgba(0,0,0,0.04)',
+        }}
       >
         <div
-          className="flex h-8 w-8 items-center justify-center rounded-lg"
-          style={{
-            background: 'rgba(59, 108, 181, 0.18)',
-            border: '0.5px solid rgba(59, 108, 181, 0.1)',
-            boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.3)',
-          }}
+          className="flex h-16 shrink-0 items-center gap-2.5 px-4"
+          style={{ borderBottom: '0.5px solid rgba(0, 0, 0, 0.06)' }}
         >
-          <GraduationCap className="h-5 w-5 text-[var(--primary-600)]" />
+          <div
+            className="flex h-8 w-8 items-center justify-center rounded-lg"
+            style={{
+              background: 'rgba(59, 108, 181, 0.18)',
+              border: '0.5px solid rgba(59, 108, 181, 0.1)',
+              boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.3)',
+            }}
+          >
+            <GraduationCap className="h-5 w-5 text-[var(--primary-600)]" />
+          </div>
+          <span className="truncate text-[15px] font-semibold text-[var(--slate-700)]">Kantaka Sodhana</span>
         </div>
-        <span className="text-[15px] font-semibold text-[var(--slate-700)]">Kantaka Sodhana</span>
-      </div>
 
-      <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-4">
-        {items.map((item) => {
-          const Icon = item.icon;
-          const active = pathname === item.href;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium transition-colors ${
-                active
-                  ? 'text-[var(--primary-600)]'
-                  : 'text-[var(--slate-500)] hover:text-[var(--slate-700)]'
-              }`}
-              style={
-                active
-                  ? {
-                      background: 'rgba(59, 108, 181, 0.12)',
-                      border: '0.5px solid rgba(59, 108, 181, 0.12)',
-                      boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.25)',
-                    }
-                  : undefined
-              }
-            >
-              <Icon className="h-4 w-4" />
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
+        <nav className="scrollbar-none flex flex-1 flex-col gap-0.5 overflow-y-auto px-2 py-3">
+          {items.map((item) => {
+            const Icon = item.icon;
+            const active = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium transition-colors ${
+                  active
+                    ? 'text-[var(--primary-600)]'
+                    : 'text-[var(--slate-500)] hover:text-[var(--slate-700)]'
+                }`}
+                style={
+                  active
+                    ? {
+                        background: 'rgba(59, 108, 181, 0.12)',
+                        border: '0.5px solid rgba(59, 108, 181, 0.12)',
+                        boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.25)',
+                      }
+                    : undefined
+                }
+              >
+                <Icon className="h-4 w-4 shrink-0" />
+                <span className="truncate">{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
 
-      <div
-        className="shrink-0 p-4"
-        style={{ borderTop: '0.5px solid rgba(0, 0, 0, 0.06)' }}
-      >
-        <div className="mb-3 px-3">
-          <p className="text-sm font-semibold text-[var(--slate-700)]">{user.name}</p>
-          <p className="text-xs text-[var(--slate-400)]">{user.role}</p>
-        </div>
-        <button
-          onClick={() => logout()}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--danger-500)] transition-colors hover:bg-[rgba(181,59,59,0.08)]"
+        <div
+          className="shrink-0 p-3"
+          style={{ borderTop: '0.5px solid rgba(0, 0, 0, 0.06)' }}
         >
-          <LogOut className="h-5 w-5" />
-          Logout
-        </button>
+          <div className="mb-3 px-2">
+            <p className="truncate text-sm font-semibold text-[var(--slate-700)]">{user.name}</p>
+            <p className="text-xs text-[var(--slate-400)]">{user.role}</p>
+          </div>
+          <button
+            onClick={() => logout()}
+            className="flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium text-[var(--danger-500)] transition-colors hover:bg-[rgba(181,59,59,0.08)]"
+          >
+            <LogOut className="h-5 w-5 shrink-0" />
+            <span className="truncate">Logout</span>
+          </button>
+        </div>
       </div>
     </aside>
   );
