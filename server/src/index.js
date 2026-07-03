@@ -79,8 +79,15 @@ app.use('/api/dashboard', dashboardRoutes);
 // Protected file uploads - requires authentication
 app.use('/uploads', authorizeFileAccess, require('express').static(require('path').join(__dirname, '../uploads')));
 
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+app.get('/api/health', async (req, res) => {
+  try {
+    const prisma = require('./config/db');
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ status: 'ok', db: 'connected', timestamp: new Date().toISOString() });
+  } catch (err) {
+    console.error('HEALTH_DB_ERROR:', err.message);
+    res.status(500).json({ status: 'error', db: 'disconnected', error: err.message, timestamp: new Date().toISOString() });
+  }
 });
 
 app.use((err, req, res, _next) => {
@@ -90,6 +97,9 @@ app.use((err, req, res, _next) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`DATABASE_URL set: ${!!process.env.DATABASE_URL}`);
+  console.log(`JWT_SECRET set: ${!!process.env.JWT_SECRET}`);
+  console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
 });
 
 module.exports = app;
