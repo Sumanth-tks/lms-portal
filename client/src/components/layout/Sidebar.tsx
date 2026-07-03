@@ -23,6 +23,8 @@ import {
   TrendingUp,
   Bell,
   Settings,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react';
 
 const menuItems = {
@@ -84,7 +86,12 @@ const menuItems = {
   ],
 };
 
-export default function Sidebar() {
+type SidebarProps = {
+  collapsed: boolean;
+  onToggle: () => void;
+};
+
+export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const pathname = usePathname();
   const { user, logout } = useAuthStore();
 
@@ -93,22 +100,26 @@ export default function Sidebar() {
   const items = menuItems[user.role] || [];
 
   return (
-    <aside className="flex w-full shrink-0 self-stretch p-4 pb-0 md:w-72 md:p-5 md:pr-3 lg:w-80">
+    <aside
+      className={`sticky top-0 flex h-screen shrink-0 p-4 pr-3 transition-[width] duration-300 ease-out ${
+        collapsed ? 'w-[92px]' : 'w-72 lg:w-80'
+      }`}
+    >
       <div
-        className="glass-panel flex min-h-[520px] w-full flex-col overflow-hidden md:min-h-[calc(100vh-5.5rem)]"
+        className="glass-panel flex h-[calc(100vh-2rem)] w-full flex-col overflow-hidden"
         style={{
           background: 'rgba(255, 255, 255, 0.34)',
           border: '0.5px solid rgba(255, 255, 255, 0.5)',
-          borderRadius: '18px',
-          boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.55), 0 1px 8px rgba(0,0,0,0.04)',
+          borderRadius: collapsed ? '20px' : '22px',
+          boxShadow: 'inset 0 0.5px 0 rgba(255,255,255,0.62), 0 18px 42px rgba(59,108,181,0.1), 0 2px 12px rgba(30,42,58,0.04)',
         }}
       >
         <div
-          className="flex h-16 shrink-0 items-center gap-2.5 px-4"
+          className={`flex h-16 shrink-0 items-center gap-2.5 px-3 ${collapsed ? 'justify-center' : ''}`}
           style={{ borderBottom: '0.5px solid rgba(0, 0, 0, 0.06)' }}
         >
           <div
-            className="flex h-8 w-8 items-center justify-center rounded-lg"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
             style={{
               background: 'rgba(59, 108, 181, 0.18)',
               border: '0.5px solid rgba(59, 108, 181, 0.1)',
@@ -117,10 +128,41 @@ export default function Sidebar() {
           >
             <GraduationCap className="h-5 w-5 text-[var(--primary-600)]" />
           </div>
-          <span className="truncate text-[15px] font-semibold text-[var(--slate-700)]">Kantaka Sodhana</span>
+          {!collapsed && (
+            <span className="truncate text-[15px] font-semibold text-[var(--slate-700)]">Kantaka Sodhana</span>
+          )}
+          {!collapsed && (
+            <button
+              type="button"
+              onClick={onToggle}
+              aria-label="Collapse sidebar"
+              title="Collapse sidebar"
+              className="ml-auto flex h-8 w-8 items-center justify-center rounded-lg text-[var(--slate-400)] outline-none transition hover:bg-white/25 hover:text-[var(--primary-600)] focus-visible:ring-2 focus-visible:ring-[rgba(59,108,181,0.28)]"
+            >
+              <PanelLeftClose className="h-4 w-4" />
+            </button>
+          )}
         </div>
 
-        <nav className="scrollbar-none flex flex-1 flex-col gap-0.5 overflow-y-auto px-2 py-3">
+        {collapsed && (
+          <div className="px-2 pt-3">
+            <button
+              type="button"
+              onClick={onToggle}
+              aria-label="Expand sidebar"
+              title="Expand sidebar"
+              className="flex h-10 w-full items-center justify-center rounded-xl text-[var(--primary-600)] outline-none transition hover:bg-white/28 focus-visible:ring-2 focus-visible:ring-[rgba(59,108,181,0.28)]"
+              style={{
+                background: 'rgba(255,255,255,0.2)',
+                border: '0.5px solid rgba(255,255,255,0.35)',
+              }}
+            >
+              <PanelLeftOpen className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+
+        <nav className={`scrollbar-none flex flex-1 flex-col gap-0.5 overflow-y-auto py-3 ${collapsed ? 'px-2' : 'px-2'}`}>
           {items.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href;
@@ -128,7 +170,10 @@ export default function Sidebar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[rgba(59,108,181,0.28)] ${
+                title={collapsed ? item.label : undefined}
+                className={`flex items-center rounded-xl py-2 text-[13px] font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[rgba(59,108,181,0.28)] ${
+                  collapsed ? 'justify-center px-0' : 'gap-3 px-3'
+                } ${
                   active
                     ? 'text-[var(--primary-600)]'
                     : 'text-[var(--slate-500)] hover:text-[var(--slate-700)]'
@@ -144,26 +189,31 @@ export default function Sidebar() {
                 }
               >
                 <Icon className="h-4 w-4 shrink-0" />
-                <span className="truncate">{item.label}</span>
+                <span className={collapsed ? 'sr-only' : 'truncate'}>{item.label}</span>
               </Link>
             );
           })}
         </nav>
 
         <div
-          className="shrink-0 p-3"
+          className={`shrink-0 p-3 ${collapsed ? 'text-center' : ''}`}
           style={{ borderTop: '0.5px solid rgba(0, 0, 0, 0.06)' }}
         >
-          <div className="mb-3 px-2">
-            <p className="truncate text-sm font-semibold text-[var(--slate-700)]">{user.name}</p>
-            <p className="text-xs text-[var(--slate-400)]">{user.role}</p>
-          </div>
+          {!collapsed && (
+            <div className="mb-3 px-2">
+              <p className="truncate text-sm font-semibold text-[var(--slate-700)]">{user.name}</p>
+              <p className="text-xs text-[var(--slate-400)]">{user.role}</p>
+            </div>
+          )}
           <button
             onClick={() => logout()}
-            className="flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium text-[var(--danger-500)] outline-none transition-colors hover:bg-[rgba(181,59,59,0.08)] focus-visible:ring-2 focus-visible:ring-[rgba(181,59,59,0.18)]"
+            title={collapsed ? 'Logout' : undefined}
+            className={`flex w-full items-center rounded-xl text-sm font-medium text-[var(--danger-500)] outline-none transition-colors hover:bg-[rgba(181,59,59,0.08)] focus-visible:ring-2 focus-visible:ring-[rgba(181,59,59,0.18)] ${
+              collapsed ? 'justify-center px-0 py-2.5' : 'gap-3 px-2.5 py-2'
+            }`}
           >
             <LogOut className="h-5 w-5 shrink-0" />
-            <span className="truncate">Logout</span>
+            <span className={collapsed ? 'sr-only' : 'truncate'}>Logout</span>
           </button>
         </div>
       </div>
