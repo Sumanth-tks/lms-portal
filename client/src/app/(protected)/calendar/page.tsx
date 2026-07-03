@@ -14,6 +14,14 @@ const statusColors: Record<string, string> = {
   EXCUSED: 'bg-blue-400',
 };
 
+function ymd(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function dateKey(value: string) {
+  return value.split('T')[0];
+}
+
 export default function CalendarPage() {
   const { user } = useAuthStore();
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -55,8 +63,7 @@ export default function CalendarPage() {
 
   const attendanceMap = new Map<string, Attendance>();
   attendance.forEach((a) => {
-    const dateStr = new Date(a.date).toISOString().split('T')[0];
-    attendanceMap.set(dateStr, a);
+    attendanceMap.set(dateKey(a.date), a);
   });
 
   const days = [];
@@ -96,7 +103,7 @@ export default function CalendarPage() {
 
             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
             const record = attendanceMap.get(dateStr);
-            const isToday = dateStr === new Date().toISOString().split('T')[0];
+            const isToday = dateStr === ymd(new Date());
             const dayOfWeek = new Date(year, month, day).getDay();
             const isSunday = dayOfWeek === 0;
 

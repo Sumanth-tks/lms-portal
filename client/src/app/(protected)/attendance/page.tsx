@@ -18,6 +18,16 @@ function ymd(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
+function dateFromYmd(value: string) {
+  const [datePart] = value.split('T');
+  const [year, month, day] = datePart.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function formatYmdDate(value: string, options: Intl.DateTimeFormatOptions) {
+  return dateFromYmd(value).toLocaleDateString('en-IN', options);
+}
+
 export default function AttendancePage() {
   const { user } = useAuthStore();
   const isIntern = user?.role === 'INTERN';
@@ -147,7 +157,7 @@ export default function AttendancePage() {
               return (
                 <div key={record.id} className="flex items-center justify-between px-6 py-3">
                   <span className="text-sm text-[var(--slate-600)]">
-                    {new Date(record.date).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })}
+                    {formatYmdDate(record.date, { weekday: 'short', day: 'numeric', month: 'short' })}
                   </span>
                   <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${cfg.color}`}>{cfg.label}</span>
                 </div>
@@ -184,7 +194,7 @@ export default function AttendancePage() {
         <select
           value={selectedIntern}
           onChange={(e) => selectIntern(e.target.value)}
-          className="rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm"
+          className="glass-input min-w-[min(100%,30rem)] px-4 py-2 text-sm text-[var(--slate-700)] outline-none transition focus:border-[rgba(59,108,181,0.32)] focus:ring-2 focus:ring-[rgba(59,108,181,0.14)]"
         >
           {interns.map((i) => (
             <option key={i.id} value={i.id}>{i.name} ({i.email})</option>
@@ -241,17 +251,17 @@ export default function AttendancePage() {
       )}
 
       {editDay && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="w-full max-w-sm rounded-xl bg-[var(--card-bg)] p-6 shadow-xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(30,42,58,0.38)] p-4 backdrop-blur-md">
+          <div className="liquid-card w-full max-w-md p-6 shadow-2xl">
             <h2 className="text-lg font-bold text-[var(--slate-800)]">Mark Attendance</h2>
             <p className="mb-4 text-sm text-[var(--slate-400)]">
-              {new Date(editDay).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+              {formatYmdDate(editDay, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
             <label className="mb-1 block text-sm font-medium text-[var(--slate-600)]">Status</label>
             <select
               value={editForm.status}
               onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-              className="mb-4 w-full rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm"
+              className="glass-input mb-4 w-full px-4 py-2.5 text-sm text-[var(--slate-700)] outline-none transition focus:border-[rgba(59,108,181,0.32)] focus:ring-2 focus:ring-[rgba(59,108,181,0.14)]"
             >
               <option value="PRESENT">Present</option>
               <option value="LATE">Late</option>
@@ -264,12 +274,12 @@ export default function AttendancePage() {
               type="text"
               value={editForm.reason}
               onChange={(e) => setEditForm({ ...editForm, reason: e.target.value })}
-              className="mb-4 w-full rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm"
+              className="glass-input mb-5 w-full px-4 py-2.5 text-sm text-[var(--slate-700)] outline-none transition placeholder:text-[var(--slate-300)] focus:border-[rgba(59,108,181,0.32)] focus:ring-2 focus:ring-[rgba(59,108,181,0.14)]"
               placeholder="Reason"
             />
             <div className="flex justify-end gap-2">
-              <button onClick={() => setEditDay(null)} className="rounded-lg border border-[var(--slate-200)] px-4 py-2 text-sm font-medium text-[var(--slate-600)] hover:bg-[var(--slate-50)]">Cancel</button>
-              <button onClick={saveDay} disabled={saving} className="rounded-lg bg-[var(--primary-400)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--primary-600)] disabled:opacity-50">
+              <button onClick={() => setEditDay(null)} className="liquid-control px-4 py-2 text-sm font-medium text-[var(--slate-600)] outline-none focus-visible:ring-2 focus-visible:ring-[rgba(59,108,181,0.16)]">Cancel</button>
+              <button onClick={saveDay} disabled={saving} className="rounded-[14px] bg-[var(--primary-500)] px-4 py-2 text-sm font-medium text-white shadow-lg shadow-[rgba(59,108,181,0.18)] outline-none transition hover:bg-[var(--primary-600)] focus-visible:ring-2 focus-visible:ring-[rgba(59,108,181,0.28)] disabled:opacity-50">
                 {saving ? 'Saving...' : 'Save'}
               </button>
             </div>
