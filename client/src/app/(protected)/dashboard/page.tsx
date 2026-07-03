@@ -3,10 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import api from '@/lib/api';
-import type { Notification as Notif } from '@/types';
+import type { Assignment, CalendarEvent, Course, Notification as Notif } from '@/types';
 import {
   Activity, ArrowRight, BookOpen, Users, ClipboardCheck, FileText,
-  Brain, GitBranch, Trophy, Bell, Check, TrendingUp,
+  Brain, GitBranch, Trophy, Bell, Check, TrendingUp, Route,
+  CalendarDays, Flag, ListChecks, MessageSquare, Pin,
+  CheckCircle2, Circle, Target,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -22,21 +24,55 @@ interface DashboardData {
 export default function DashboardPage() {
   const { user } = useAuthStore();
   const [data, setData] = useState<DashboardData | null>(null);
+  const [studentCourses, setStudentCourses] = useState<Course[]>([]);
+  const [studentAssignments, setStudentAssignments] = useState<Assignment[]>([]);
+  const [studentEvents, setStudentEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let active = true;
+
     async function load() {
+      setLoading(true);
       try {
         const endpoint = user?.role === 'ADMIN' ? '/dashboard/admin'
           : user?.role === 'MENTOR' ? '/dashboard/mentor'
           : '/dashboard/intern';
         const res = await api.get(endpoint);
+        if (!active) return;
         setData(res.data.data);
+
+        if (user?.role === 'INTERN') {
+          const now = new Date();
+          const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+          const [coursesRes, assignmentsRes, thisMonthEventsRes, nextMonthEventsRes] = await Promise.allSettled([
+            api.get('/courses'),
+            api.get('/assignments'),
+            api.get(`/calendar-events?month=${now.getMonth() + 1}&year=${now.getFullYear()}`),
+            api.get(`/calendar-events?month=${nextMonth.getMonth() + 1}&year=${nextMonth.getFullYear()}`),
+          ]);
+
+          if (!active) return;
+          setStudentCourses(coursesRes.status === 'fulfilled' ? coursesRes.value.data.data : []);
+          setStudentAssignments(assignmentsRes.status === 'fulfilled' ? assignmentsRes.value.data.data : []);
+          const thisMonthEvents = thisMonthEventsRes.status === 'fulfilled' ? thisMonthEventsRes.value.data.data : [];
+          const nextMonthEvents = nextMonthEventsRes.status === 'fulfilled' ? nextMonthEventsRes.value.data.data : [];
+          setStudentEvents(dedupeById([...thisMonthEvents, ...nextMonthEvents]));
+        } else {
+          setStudentCourses([]);
+          setStudentAssignments([]);
+          setStudentEvents([]);
+        }
       } catch { /* handled */ } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     }
+
     load();
+
+    return () => {
+      active = false;
+    };
   }, [user?.role]);
 
   async function markAllRead() {
@@ -147,44 +183,29 @@ export default function DashboardPage() {
 
       {/* Intern Dashboard */}
       {user?.role === 'INTERN' && (
-        <div>
-          <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <StatCard icon={<ClipboardCheck className="h-5 w-5 text-[var(--primary-600)]" />} label="Attendance" value={`${s.attendanceRate}%`} colorClass="si-blue" />
+            <StatCard icon={<ListChecks className="h-5 w-5 text-[var(--sage-500)]" />} label="Today Tasks" value={`${s.completedTasks}/${s.todayTasks}`} colorClass="si-green" />
+            <StatCard icon={<FileText className="h-5 w-5 text-[var(--gold-500)]" />} label="Submissions" value={s.totalSubmissions as number} colorClass="si-gold" />
+            <StatCard icon={<Target className="h-5 w-5 text-[var(--rose-500)]" />} label="Capstone" value={(s.capstonePhase as string) || 'Not started'} colorClass="si-purple" />
           </div>
-          <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-5">
-            <MiniStat label="Today Tasks" value={`${s.completedTasks}/${s.todayTasks}`} />
-            <MiniStat label="Submissions" value={s.totalSubmissions as number} />
-            <MiniStat label="Quiz Attempts" value={s.quizAttempts as number} />
-            <MiniStat label="Commits" value={s.commits as number} />
-            <MiniStat label="Capstone" value={(s.capstonePhase as string) || 'Not started'} />
+
+          <LearningPathMap courses={studentCourses} assignments={studentAssignments} />
+
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+            <PriorityQueue
+              stats={s}
+              assignments={studentAssignments}
+              events={studentEvents}
+              notifications={data.notifications || []}
+            />
+            <CalendarAgenda events={studentEvents} />
           </div>
-          <DashboardAnalytics
-            segments={[
-              { label: 'Attendance', value: s.attendanceRate as number, color: '#3B6CB5' },
-              { label: 'Gap', value: Math.max(0, 100 - (s.attendanceRate as number)), color: '#C5CDD8' },
-            ]}
-            bars={[
-              { label: 'Attendance', value: s.attendanceRate as number, detail: `${s.attendanceRate}%` },
-              { label: 'Daily Tasks', value: percent(s.completedTasks as number, s.todayTasks as number), detail: `${s.completedTasks}/${s.todayTasks}` },
-            ]}
-          />
-          <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+            <MentorNotes notifications={data.notifications || []} />
             <QuickLinks role="INTERN" />
-            {data.recentSubmissions && data.recentSubmissions.length > 0 && (
-              <div className="liquid-card p-5">
-                <h3 className="mb-3 text-sm font-semibold text-[var(--slate-700)]">Recent Submissions</h3>
-                <div className="space-y-2">
-                  {data.recentSubmissions.map((sub) => (
-                    <div key={sub.id} className="flex items-center justify-between text-sm">
-                      <span className="text-[var(--slate-600)]">{sub.assignment?.title}</span>
-                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${sub.status === 'GRADED' ? 'bg-[var(--sage-50)] text-[var(--sage-500)]' : 'bg-[var(--primary-50)] text-[var(--primary-600)]'}`}>
-                        {sub.status === 'GRADED' ? `${sub.grade}/${sub.assignment?.maxScore}` : sub.status}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </div>
       )}
@@ -232,6 +253,218 @@ const iconStyles: Record<string, React.CSSProperties> = {
 function percent(value: number, total: number) {
   if (!total) return 0;
   return Math.max(0, Math.min(100, Math.round((value / total) * 100)));
+}
+
+type PriorityTone = 'primary' | 'sage' | 'gold' | 'rose';
+
+interface PriorityItem {
+  key: string;
+  label: string;
+  meta: string;
+  tone: PriorityTone;
+  icon: React.ReactNode;
+  href?: string;
+}
+
+function dedupeById<T extends { id: string }>(items: T[]) {
+  return Array.from(new Map(items.map((item) => [item.id, item])).values());
+}
+
+function toNumber(value: unknown) {
+  return typeof value === 'number' ? value : Number(value || 0);
+}
+
+function dateKey(value: string) {
+  return value.split('T')[0];
+}
+
+function dateOnly(value: string) {
+  const [year, month, day] = dateKey(value).split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function todayOnly() {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+}
+
+function getUpcomingEvents(events: CalendarEvent[], take = 4) {
+  const today = todayOnly().getTime();
+  return [...events]
+    .filter((event) => dateOnly(event.date).getTime() >= today)
+    .sort((a, b) => dateOnly(a.date).getTime() - dateOnly(b.date).getTime())
+    .slice(0, take);
+}
+
+function getUpcomingAssignments(assignments: Assignment[], take = 3) {
+  const now = Date.now();
+  return [...assignments]
+    .filter((assignment) => new Date(assignment.deadline).getTime() >= now)
+    .sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime())
+    .slice(0, take);
+}
+
+function getActiveCourse(courses: Course[], assignments: Assignment[]) {
+  const nearestAssignment = getUpcomingAssignments(assignments, 1)[0];
+  const assignmentWeek = nearestAssignment?.module?.course?.weekNumber;
+  return courses.find((course) => course.weekNumber === assignmentWeek) || courses[0] || null;
+}
+
+function formatRelativeDate(value: string) {
+  const target = dateOnly(value);
+  const diffDays = Math.round((target.getTime() - todayOnly().getTime()) / 86400000);
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Tomorrow';
+  if (diffDays > 1 && diffDays < 7) return `${diffDays} days`;
+  return target.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+}
+
+function formatAssignmentDue(value: string) {
+  const date = new Date(value);
+  const today = todayOnly();
+  const dueDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const diffDays = Math.round((dueDay.getTime() - today.getTime()) / 86400000);
+  if (diffDays === 0) return `Due today · ${date.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' })}`;
+  if (diffDays === 1) return `Due tomorrow · ${date.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' })}`;
+  return `Due ${date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}`;
+}
+
+function formatTimeRange(event: CalendarEvent) {
+  if (event.startTime && event.endTime) return `${event.startTime}-${event.endTime}`;
+  return event.startTime || event.endTime || '';
+}
+
+function titleCase(value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+}
+
+function statusLabel(state: 'previous' | 'active' | 'upcoming') {
+  if (state === 'previous') return 'Previous';
+  if (state === 'active') return 'Active';
+  return 'Upcoming';
+}
+
+function buildPriorityItems(
+  stats: DashboardData['stats'],
+  assignments: Assignment[],
+  events: CalendarEvent[],
+  notifications: Notif[]
+): PriorityItem[] {
+  const items: PriorityItem[] = [];
+  const completedTasks = toNumber(stats.completedTasks);
+  const todayTasks = toNumber(stats.todayTasks);
+  const remainingTasks = Math.max(0, todayTasks - completedTasks);
+  const nearestAssignment = getUpcomingAssignments(assignments, 1)[0];
+  const nearestEvent = getUpcomingEvents(events, 1)[0];
+  const feedback = notifications.find((note) => /mentor|feedback|review|graded|resubmit/i.test(`${note.title} ${note.message} ${note.type}`));
+
+  if (!stats.markedToday) {
+    items.push({
+      key: 'attendance',
+      label: 'Mark attendance',
+      meta: 'Due today',
+      href: '/attendance',
+      tone: 'primary',
+      icon: <ClipboardCheck className="h-4 w-4" />,
+    });
+  }
+
+  if (remainingTasks > 0) {
+    items.push({
+      key: 'tasks',
+      label: `${remainingTasks} daily ${remainingTasks === 1 ? 'task' : 'tasks'}`,
+      meta: `${completedTasks}/${todayTasks} completed`,
+      href: '/tasks',
+      tone: 'sage',
+      icon: <ListChecks className="h-4 w-4" />,
+    });
+  }
+
+  if (nearestAssignment) {
+    items.push({
+      key: `assignment-${nearestAssignment.id}`,
+      label: nearestAssignment.title,
+      meta: formatAssignmentDue(nearestAssignment.deadline),
+      href: `/assignments/${nearestAssignment.id}`,
+      tone: 'gold',
+      icon: <FileText className="h-4 w-4" />,
+    });
+  }
+
+  if (nearestEvent) {
+    items.push({
+      key: `event-${nearestEvent.id}`,
+      label: nearestEvent.title,
+      meta: `${titleCase(nearestEvent.type)} · ${formatRelativeDate(nearestEvent.date)}`,
+      href: '/calendar',
+      tone: nearestEvent.type === 'EXAM' ? 'rose' : 'primary',
+      icon: <CalendarDays className="h-4 w-4" />,
+    });
+  }
+
+  if (feedback) {
+    items.push({
+      key: `note-${feedback.id}`,
+      label: feedback.title,
+      meta: feedback.message,
+      href: feedback.link || '/notifications',
+      tone: 'primary',
+      icon: <MessageSquare className="h-4 w-4" />,
+    });
+  }
+
+  if (items.length === 0) {
+    return [{
+      key: 'clear',
+      label: 'All clear today',
+      meta: 'No urgent learning items',
+      tone: 'sage',
+      icon: <CheckCircle2 className="h-4 w-4" />,
+    }];
+  }
+
+  return items.slice(0, 4);
+}
+
+function pathStateClass(state: 'previous' | 'active' | 'upcoming') {
+  if (state === 'active') return 'border-[rgba(59,108,181,0.28)] bg-[rgba(59,108,181,0.12)] shadow-[0_16px_36px_rgba(59,108,181,0.12)]';
+  if (state === 'previous') return 'border-[rgba(45,122,79,0.16)] bg-[rgba(45,122,79,0.08)]';
+  return 'border-white/45 bg-white/25';
+}
+
+function priorityToneClass(tone: PriorityTone) {
+  const classes = {
+    primary: { icon: 'bg-[rgba(59,108,181,0.13)] text-[var(--primary-600)]' },
+    sage: { icon: 'bg-[rgba(45,122,79,0.13)] text-[var(--sage-500)]' },
+    gold: { icon: 'bg-[rgba(154,107,30,0.13)] text-[var(--gold-500)]' },
+    rose: { icon: 'bg-[rgba(166,70,83,0.12)] text-[var(--rose-500)]' },
+  };
+  return classes[tone];
+}
+
+function eventToneClass(type: string) {
+  if (type === 'EXAM') {
+    return {
+      icon: 'bg-[rgba(166,70,83,0.12)] text-[var(--rose-500)]',
+      pill: 'bg-[var(--danger-50)] text-[var(--danger-500)]',
+    };
+  }
+  if (type === 'DEADLINE') {
+    return {
+      icon: 'bg-[rgba(154,107,30,0.13)] text-[var(--gold-500)]',
+      pill: 'bg-[var(--gold-50)] text-[var(--gold-500)]',
+    };
+  }
+  if (type === 'SESSION') {
+    return {
+      icon: 'bg-[rgba(45,122,79,0.13)] text-[var(--sage-500)]',
+      pill: 'bg-[var(--sage-50)] text-[var(--sage-500)]',
+    };
+  }
+  return {
+    icon: 'bg-[rgba(59,108,181,0.13)] text-[var(--primary-600)]',
+    pill: 'bg-[var(--primary-50)] text-[var(--primary-600)]',
+  };
 }
 
 function DashboardAnalytics({
@@ -300,6 +533,235 @@ function DashboardAnalytics({
           ))}
         </div>
       </div>
+    </div>
+  );
+}
+
+function LearningPathMap({ courses, assignments }: { courses: Course[]; assignments: Assignment[] }) {
+  const sortedCourses = [...courses].sort((a, b) => a.weekNumber - b.weekNumber || a.order - b.order);
+  const activeCourse = getActiveCourse(sortedCourses, assignments);
+  const activeIndex = activeCourse ? sortedCourses.findIndex((course) => course.id === activeCourse.id) : 0;
+  const windowStart = Math.min(Math.max(activeIndex - 2, 0), Math.max(sortedCourses.length - 6, 0));
+  const visibleCourses = sortedCourses.slice(windowStart, windowStart + 6);
+
+  return (
+    <div className="liquid-card p-5">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div className="flex items-center gap-2">
+            <Route className="h-4 w-4 text-[var(--primary-500)]" />
+            <h3 className="text-sm font-semibold text-[var(--slate-700)]">Learning Path</h3>
+          </div>
+          <p className="mt-1 text-xs text-[var(--slate-400)]">
+            {activeCourse ? `Week ${activeCourse.weekNumber} · ${activeCourse.title}` : 'Curriculum path'}
+          </p>
+        </div>
+        {activeCourse && (
+          <Link
+            href={`/curriculum/${activeCourse.id}`}
+            className="liquid-control flex items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--primary-600)]"
+          >
+            Continue
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        )}
+      </div>
+
+      {visibleCourses.length > 0 ? (
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3 2xl:grid-cols-6">
+          {visibleCourses.map((course) => {
+            const courseIndex = sortedCourses.findIndex((item) => item.id === course.id);
+            const state = courseIndex < activeIndex ? 'previous' : courseIndex === activeIndex ? 'active' : 'upcoming';
+            return (
+              <Link
+                key={course.id}
+                href={`/curriculum/${course.id}`}
+                className={`group min-h-[116px] rounded-2xl border p-4 transition duration-200 hover:-translate-y-0.5 ${pathStateClass(state)}`}
+              >
+                <div className="mb-3 flex items-start justify-between gap-2">
+                  <span className="rounded-full bg-white/40 px-2 py-0.5 text-[11px] font-medium text-[var(--slate-500)]">
+                    Week {course.weekNumber}
+                  </span>
+                  {state === 'previous' && <CheckCircle2 className="h-4 w-4 text-[var(--sage-500)]" />}
+                  {state === 'active' && <Target className="h-4 w-4 text-[var(--primary-600)]" />}
+                  {state === 'upcoming' && <Circle className="h-4 w-4 text-[var(--slate-300)]" />}
+                </div>
+                <h4 className="line-clamp-2 text-sm font-semibold leading-snug text-[var(--slate-700)]">
+                  {course.title}
+                </h4>
+                <div className="mt-3 flex items-center justify-between gap-2 text-[11px] text-[var(--slate-400)]">
+                  <span>{course.category || statusLabel(state)}</span>
+                  <span>{course._count?.modules || 0} modules</span>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="liquid-control flex min-h-[116px] items-center justify-center px-4 text-center text-sm text-[var(--slate-400)]">
+          No curriculum published yet
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PriorityQueue({
+  stats,
+  assignments,
+  events,
+  notifications,
+}: {
+  stats: DashboardData['stats'];
+  assignments: Assignment[];
+  events: CalendarEvent[];
+  notifications: Notif[];
+}) {
+  const items = buildPriorityItems(stats, assignments, events, notifications);
+
+  return (
+    <div className="liquid-card min-h-[320px] p-5">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <Flag className="h-4 w-4 text-[var(--primary-500)]" />
+          <h3 className="text-sm font-semibold text-[var(--slate-700)]">Priority Queue</h3>
+        </div>
+        <span className="rounded-full bg-white/35 px-2.5 py-1 text-xs font-medium text-[var(--slate-400)]">
+          {items.some((item) => item.href) ? `${items.length} active` : 'Clear'}
+        </span>
+      </div>
+
+      <div className="space-y-3">
+        {items.map((item) => {
+          const content = (
+            <>
+              <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ${priorityToneClass(item.tone).icon}`}>
+                {item.icon}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-sm font-semibold text-[var(--slate-700)]">{item.label}</span>
+                <span className="mt-0.5 block truncate text-xs text-[var(--slate-400)]">{item.meta}</span>
+              </span>
+              {item.href && <ArrowRight className="h-4 w-4 shrink-0 text-[var(--slate-300)]" />}
+            </>
+          );
+
+          if (!item.href) {
+            return (
+              <div key={item.key} className="liquid-control flex min-h-[64px] items-center gap-3 px-3">
+                {content}
+              </div>
+            );
+          }
+
+          return (
+            <Link key={item.key} href={item.href} className="liquid-control group flex min-h-[64px] items-center gap-3 px-3 transition hover:-translate-y-0.5">
+              {content}
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function CalendarAgenda({ events }: { events: CalendarEvent[] }) {
+  const upcomingEvents = getUpcomingEvents(events, 4);
+
+  return (
+    <div className="liquid-card min-h-[320px] p-5">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <CalendarDays className="h-4 w-4 text-[var(--primary-500)]" />
+          <h3 className="text-sm font-semibold text-[var(--slate-700)]">Calendar Agenda</h3>
+        </div>
+        <Link href="/calendar" className="text-xs font-medium text-[var(--primary-500)] hover:text-[var(--primary-600)]">
+          View all
+        </Link>
+      </div>
+
+      {upcomingEvents.length > 0 ? (
+        <div className="space-y-3">
+          {upcomingEvents.map((event) => (
+            <Link key={event.id} href="/calendar" className="liquid-control flex min-h-[64px] items-center gap-3 px-3 transition hover:-translate-y-0.5">
+              <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ${eventToneClass(event.type).icon}`}>
+                <CalendarDays className="h-4 w-4" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="flex items-center gap-2">
+                  <span className="truncate text-sm font-semibold text-[var(--slate-700)]">{event.title}</span>
+                  <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium ${eventToneClass(event.type).pill}`}>
+                    {titleCase(event.type)}
+                  </span>
+                </span>
+                <span className="mt-0.5 block truncate text-xs text-[var(--slate-400)]">
+                  {formatRelativeDate(event.date)}{event.startTime ? ` · ${formatTimeRange(event)}` : ''}
+                </span>
+              </span>
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <div className="liquid-control flex min-h-[226px] flex-col items-center justify-center px-4 text-center">
+          <CalendarDays className="mb-3 h-6 w-6 text-[var(--slate-300)]" />
+          <p className="text-sm font-medium text-[var(--slate-500)]">No upcoming events</p>
+          <p className="mt-1 text-xs text-[var(--slate-400)]">This week is clear</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MentorNotes({ notifications }: { notifications: Notif[] }) {
+  const notes = notifications
+    .filter((note) => /mentor|feedback|review|graded|resubmit/i.test(`${note.title} ${note.message} ${note.type}`))
+    .slice(0, 3);
+
+  return (
+    <div className="liquid-card min-h-[236px] p-5">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <Pin className="h-4 w-4 text-[var(--primary-500)]" />
+          <h3 className="text-sm font-semibold text-[var(--slate-700)]">Mentor Notes</h3>
+        </div>
+        <span className="rounded-full bg-white/35 px-2.5 py-1 text-xs font-medium text-[var(--slate-400)]">
+          {notes.length}
+        </span>
+      </div>
+
+      {notes.length > 0 ? (
+        <div className="space-y-3">
+          {notes.map((note) => {
+            const row = (
+              <>
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/35 text-[var(--primary-500)]">
+                  <MessageSquare className="h-4 w-4" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-semibold text-[var(--slate-700)]">{note.title}</span>
+                  <span className="mt-0.5 line-clamp-1 text-xs text-[var(--slate-400)]">{note.message}</span>
+                </span>
+              </>
+            );
+
+            return note.link ? (
+              <Link key={note.id} href={note.link} className="liquid-list-row flex min-h-[58px] items-center gap-3 px-3 py-2 transition hover:-translate-y-0.5">
+                {row}
+              </Link>
+            ) : (
+              <div key={note.id} className="liquid-list-row flex min-h-[58px] items-center gap-3 px-3 py-2">
+                {row}
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="liquid-control flex min-h-[138px] flex-col items-center justify-center px-4 text-center">
+          <MessageSquare className="mb-3 h-6 w-6 text-[var(--slate-300)]" />
+          <p className="text-sm font-medium text-[var(--slate-500)]">No mentor notes right now</p>
+          <p className="mt-1 text-xs text-[var(--slate-400)]">Feedback will appear here</p>
+        </div>
+      )}
     </div>
   );
 }
