@@ -148,3 +148,11 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(30, 42, 58, 0.25);
 }
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
