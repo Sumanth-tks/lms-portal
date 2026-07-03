@@ -254,4 +254,3 @@ module.exports = {
   getEvaluations,
   getInternProgress,
 };
-                                                
