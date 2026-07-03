@@ -49,6 +49,7 @@ async function login(req, res) {
       },
     });
   } catch (err) {
+    console.error('LOGIN_ERROR:', err.message, err.code || '');
     return error(res, 'Login failed', 500);
   }
 }
