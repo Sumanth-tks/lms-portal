@@ -3,11 +3,13 @@
 import { useState } from 'react';
 import api from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
-import { User, Lock, Save } from 'lucide-react';
+import { useThemeStore } from '@/stores/themeStore';
+import { User, Lock, Save, Sun, Moon, Monitor } from 'lucide-react';
 
 export default function SettingsPage() {
   const { user } = useAuthStore();
-  const [tab, setTab] = useState<'profile' | 'password'>('profile');
+  const { theme, setTheme } = useThemeStore();
+  const [tab, setTab] = useState<'profile' | 'password' | 'appearance'>('profile');
   const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
@@ -35,16 +37,25 @@ export default function SettingsPage() {
     }
   }
 
+  const themeOptions = [
+    { value: 'light' as const, label: 'Light', icon: Sun, description: 'Classic light appearance' },
+    { value: 'dark' as const, label: 'Dark', icon: Moon, description: 'Easy on the eyes' },
+    { value: 'system' as const, label: 'System', icon: Monitor, description: 'Match your device settings' },
+  ];
+
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold text-[var(--slate-800)]">Settings</h1>
 
-      <div className="mb-6 flex gap-1 rounded-xl bg-[var(--slate-50)] p-1" style={{ maxWidth: 300 }}>
+      <div className="mb-6 flex gap-1 rounded-xl bg-[var(--slate-50)] p-1" style={{ maxWidth: 440 }}>
         <button onClick={() => setTab('profile')} className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium ${tab === 'profile' ? 'bg-[var(--card-bg)] text-[var(--primary-600)] shadow-sm' : 'text-[var(--slate-400)]'}`}>
           <User className="h-4 w-4" /> Profile
         </button>
         <button onClick={() => setTab('password')} className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium ${tab === 'password' ? 'bg-[var(--card-bg)] text-[var(--primary-600)] shadow-sm' : 'text-[var(--slate-400)]'}`}>
           <Lock className="h-4 w-4" /> Password
+        </button>
+        <button onClick={() => setTab('appearance')} className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium ${tab === 'appearance' ? 'bg-[var(--card-bg)] text-[var(--primary-600)] shadow-sm' : 'text-[var(--slate-400)]'}`}>
+          <Sun className="h-4 w-4" /> Appearance
         </button>
       </div>
 
@@ -102,6 +113,36 @@ export default function SettingsPage() {
             <Save className="h-4 w-4" /> Change Password
           </button>
         </form>
+      )}
+
+      {tab === 'appearance' && (
+        <div className="max-w-lg glass-card p-6">
+          <h2 className="mb-1 text-lg font-bold text-[var(--slate-800)]">Theme</h2>
+          <p className="mb-5 text-sm text-[var(--slate-400)]">Choose how the application looks to you.</p>
+          <div className="grid grid-cols-3 gap-3">
+            {themeOptions.map((opt) => {
+              const Icon = opt.icon;
+              const isActive = theme === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  onClick={() => setTheme(opt.value)}
+                  className={`liquid-control flex flex-col items-center gap-2 rounded-xl px-4 py-5 text-center transition-all ${
+                    isActive
+                      ? 'border-[var(--primary-400)] ring-2 ring-[var(--primary-400)]/20'
+                      : ''
+                  }`}
+                >
+                  <Icon className={`h-6 w-6 ${isActive ? 'text-[var(--primary-500)]' : 'text-[var(--slate-400)]'}`} />
+                  <span className={`text-sm font-medium ${isActive ? 'text-[var(--primary-600)]' : 'text-[var(--slate-600)]'}`}>
+                    {opt.label}
+                  </span>
+                  <span className="text-xs text-[var(--slate-400)]">{opt.description}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
       )}
     </div>
   );
