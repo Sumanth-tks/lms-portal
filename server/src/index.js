@@ -24,6 +24,8 @@ const progressRoutes = require('./routes/progressRoutes');
 const gamificationRoutes = require('./routes/gamificationRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const calendarEventRoutes = require('./routes/calendarEventRoutes');
+const peerCodeReviewRoutes = require('./routes/peerCodeReviewRoutes');
+const riskAlertRoutes = require('./routes/riskAlertRoutes');
 const { authorizeFileAccess } = require('./middleware/fileAuth');
 
 const app = express();
@@ -38,7 +40,7 @@ app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:3000',
   credentials: true,
   optionsSuccessStatus: 200,
-  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
@@ -77,6 +79,8 @@ app.use('/api/progress', progressRoutes);
 app.use('/api/gamification', gamificationRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/calendar-events', calendarEventRoutes);
+app.use('/api/peer-reviews', peerCodeReviewRoutes);
+app.use('/api/risk-alerts', riskAlertRoutes);
 
 // Protected file uploads - requires authentication
 app.use('/uploads', authorizeFileAccess, require('express').static(require('path').join(__dirname, '../uploads')));
