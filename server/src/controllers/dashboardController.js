@@ -14,13 +14,13 @@ async function getAdminDashboard(req, res) {
       pendingSubmissions,
       recentNotifications,
     ] = await Promise.all([
-      prisma.user.groupBy({ by: ['role'], _count: true }),
+      prisma.user.groupBy({ by: ['role'], where: { status: { not: 'REMOVED' } }, _count: true }),
       prisma.batch.count({ where: { status: 'ACTIVE' } }),
       prisma.course.count(),
       prisma.assignment.count(),
       prisma.quiz.count(),
       prisma.hackathon.count(),
-      prisma.user.findMany({ orderBy: { createdAt: 'desc' }, take: 5, select: { id: true, name: true, email: true, role: true, status: true, createdAt: true } }),
+      prisma.user.findMany({ where: { status: { not: 'REMOVED' } }, orderBy: { createdAt: 'desc' }, take: 5, select: { id: true, name: true, email: true, role: true, status: true, createdAt: true } }),
       prisma.attendance.findMany({
         where: { date: new Date(new Date().toISOString().split('T')[0]) },
         select: { status: true },
@@ -69,7 +69,16 @@ async function getMentorDashboard(req, res) {
       where: { mentorId },
       select: { internId: true },
     });
-    const menteeIds = menteeRelations.map((m) => m.internId);
+    const allMenteeIds = menteeRelations.map((m) => m.internId);
+
+    // Exclude REMOVED interns
+    const activeInterns = allMenteeIds.length > 0
+      ? await prisma.user.findMany({
+          where: { id: { in: allMenteeIds }, status: { not: 'REMOVED' } },
+          select: { id: true },
+        })
+      : [];
+    const menteeIds = activeInterns.map((u) => u.id);
 
     const [
       menteeCount,
