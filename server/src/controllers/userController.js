@@ -205,3 +205,9 @@ async function setMentorInterns(req, res) {
   } catch (err) {
     return error(res, 'Failed to assign interns', 500);
   }
+}
+
+module.exports = { createUser, listUsers, getUser, updateUser, deleteUser, getMentorInterns, setMentorInterns };
+}
+
+module.exports = { createUser, listUsers, getUser, updateUser, deleteUser, getMentorInterns, setMentorInterns };
