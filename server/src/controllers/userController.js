@@ -56,12 +56,16 @@ async function createUser(req, res) {
 
 async function listUsers(req, res) {
   try {
-    const { role, batchId, status } = req.query;
+    const { role, batchId, status, includeRemoved } = req.query;
     const where = {};
 
     if (role) where.role = role;
     if (batchId) where.batchId = batchId;
-    if (status) where.status = status;
+    if (status) {
+      where.status = status;
+    } else if (includeRemoved !== 'true') {
+      where.status = { not: 'REMOVED' };
+    }
 
     if (req.user.role === 'MENTOR') {
       const assignments = await prisma.mentorIntern.findMany({
@@ -201,6 +205,3 @@ async function setMentorInterns(req, res) {
   } catch (err) {
     return error(res, 'Failed to assign interns', 500);
   }
-}
-
-module.exports = { createUser, listUsers, getUser, updateUser, deleteUser, getMentorInterns, setMentorInterns };

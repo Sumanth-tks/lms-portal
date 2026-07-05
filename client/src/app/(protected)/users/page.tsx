@@ -25,7 +25,7 @@ export default function UsersPage() {
   }, []);
 
   async function loadUsers() {
-    const { data } = await api.get('/users');
+    const { data } = await api.get('/users?includeRemoved=true');
     setUsers(data.data);
     setLoading(false);
   }
@@ -317,6 +317,6 @@ export default function UsersPage() {
           </div>
         </div>
       )}
-    </div>
+     </div>
   );
 }
