@@ -345,6 +345,15 @@ const createEvaluationSchema = z.object({
   areasOfImprovement: z.string().optional(),
 });
 
+const bulkOverrideAttendanceSchema = z.object({
+  date: z.string().min(1),
+  entries: z.array(z.object({
+    internId: z.string().min(1),
+    status: z.enum(['PRESENT', 'LATE', 'INCOMPLETE', 'ABSENT', 'EXCUSED']),
+  })).min(1),
+  reason: z.string().min(1, 'Reason required'),
+});
+
 module.exports = {
   loginSchema,
   changePasswordSchema,
@@ -361,6 +370,7 @@ module.exports = {
   toggleAccessSchema,
   bulkToggleAccessSchema,
   overrideAttendanceSchema,
+  bulkOverrideAttendanceSchema,
   submitStandupSchema,
   createDailyTaskSchema,
   updateTaskStatusSchema,

@@ -163,4 +163,45 @@ async function overrideAttendance(req, res) {
   }
 }
 
-module.exports = { markAttendance, getMyAttendance, getTodayAttendance, getAllAttendance, overrideAttendance };
+async function bulkOverrideAttendance(req, res) {
+  try {
+    const { date, entries, reason } = req.validated;
+    const dateObj = new Date(date);
+    let updated = 0;
+
+    for (const entry of entries) {
+      await prisma.attendance.upsert({
+        where: { internId_date: { internId: entry.internId, date: dateObj } },
+        update: {
+          status: entry.status,
+          overrideBy: req.user.id,
+          overrideReason: reason,
+        },
+        create: {
+          internId: entry.internId,
+          date: dateObj,
+          status: entry.status,
+          overrideBy: req.user.id,
+          overrideReason: reason,
+        },
+      });
+      updated++;
+
+      await prisma.notification.create({
+        data: {
+          userId: entry.internId,
+          type: 'ATTENDANCE_OVERRIDE',
+          title: 'Attendance Updated',
+          message: `Your attendance for ${date} was updated to ${entry.status} by mentor.`,
+          link: '/attendance',
+        },
+      });
+    }
+
+    return success(res, { updated });
+  } catch (err) {
+    return error(res, err.message, 500);
+  }
+}
+
+module.exports = { markAttendance, getMyAttendance, getTodayAttendance, getAllAttendance, overrideAttendance, bulkOverrideAttendance };
