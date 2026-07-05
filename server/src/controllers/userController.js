@@ -208,6 +208,3 @@ async function setMentorInterns(req, res) {
 }
 
 module.exports = { createUser, listUsers, getUser, updateUser, deleteUser, getMentorInterns, setMentorInterns };
-}
-
-module.exports = { createUser, listUsers, getUser, updateUser, deleteUser, getMentorInterns, setMentorInterns };
