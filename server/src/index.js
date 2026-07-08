@@ -26,6 +26,7 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 const calendarEventRoutes = require('./routes/calendarEventRoutes');
 const peerCodeReviewRoutes = require('./routes/peerCodeReviewRoutes');
 const riskAlertRoutes = require('./routes/riskAlertRoutes');
+const discussionRoutes = require('./routes/discussionRoutes');
 const { authorizeFileAccess } = require('./middleware/fileAuth');
 
 const app = express();
@@ -81,6 +82,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/calendar-events', calendarEventRoutes);
 app.use('/api/peer-reviews', peerCodeReviewRoutes);
 app.use('/api/risk-alerts', riskAlertRoutes);
+app.use('/api/discussions', discussionRoutes);
 
 // Protected file uploads - requires authentication
 app.use('/uploads', authorizeFileAccess, require('express').static(require('path').join(__dirname, '../uploads')));

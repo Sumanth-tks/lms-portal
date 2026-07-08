@@ -428,6 +428,35 @@ export interface Notification {
   createdAt: string;
 }
 
+export interface DiscussionThread {
+  id: string;
+  moduleId: string;
+  authorId: string;
+  title: string;
+  body: string;
+  isPinned: boolean;
+  isResolved: boolean;
+  createdAt: string;
+  updatedAt: string;
+  author?: { id: string; name: string; role: Role; avatarUrl: string | null };
+  module?: { id: string; title: string; course?: { id: string; title: string } };
+  _count?: { replies: number; upvotes: number };
+  upvoted?: boolean;
+  replies?: DiscussionReply[];
+}
+
+export interface DiscussionReply {
+  id: string;
+  threadId: string;
+  authorId: string;
+  body: string;
+  createdAt: string;
+  updatedAt: string;
+  author?: { id: string; name: string; role: Role; avatarUrl: string | null };
+  _count?: { upvotes: number };
+  upvoted?: boolean;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T;

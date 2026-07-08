@@ -354,6 +354,16 @@ const bulkOverrideAttendanceSchema = z.object({
   reason: z.string().min(1, 'Reason required'),
 });
 
+const createThreadSchema = z.object({
+  moduleId: z.string().min(1, 'Module ID required'),
+  title: z.string().min(1, 'Title required').max(200),
+  body: z.string().min(1, 'Body required'),
+});
+
+const createReplySchema = z.object({
+  body: z.string().min(1, 'Reply body required'),
+});
+
 module.exports = {
   loginSchema,
   changePasswordSchema,
@@ -400,4 +410,6 @@ module.exports = {
   generateReportSchema,
   mentorCommentSchema,
   createEvaluationSchema,
+  createThreadSchema,
+  createReplySchema,
 };

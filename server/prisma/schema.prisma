@@ -116,6 +116,11 @@ model User {
   xpLogs                 XpLog[]                @relation("InternXpLogs")
   streaks                Streak[]               @relation("InternStreaks")
 
+  discussionThreads      DiscussionThread[]     @relation("ThreadAuthor")
+  discussionReplies      DiscussionReply[]      @relation("ReplyAuthor")
+  threadUpvotes          ThreadUpvote[]         @relation("ThreadUpvoter")
+  replyUpvotes           ReplyUpvote[]          @relation("ReplyUpvoter")
+
   @@map("users")
 }
 
@@ -199,6 +204,7 @@ model Module {
   assignments         Assignment[]
   quizzes             Quiz[]
   creator             User     @relation("ModuleCreator", fields: [createdBy], references: [id])
+  discussionThreads   DiscussionThread[]
 
   @@map("modules")
 }
@@ -773,6 +779,68 @@ model Streak {
 
   @@unique([internId, type])
   @@map("streaks")
+}
+
+// ─── Discussions ─────────────────────────────────────
+
+model DiscussionThread {
+  id          String   @id @default(uuid())
+  moduleId    String   @map("module_id")
+  authorId    String   @map("author_id")
+  title       String
+  body        String
+  isPinned    Boolean  @default(false) @map("is_pinned")
+  isResolved  Boolean  @default(false) @map("is_resolved")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  module      Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  author      User     @relation("ThreadAuthor", fields: [authorId], references: [id])
+  replies     DiscussionReply[]
+  upvotes     ThreadUpvote[]
+
+  @@index([moduleId])
+  @@map("discussion_threads")
+}
+
+model DiscussionReply {
+  id        String   @id @default(uuid())
+  threadId  String   @map("thread_id")
+  authorId  String   @map("author_id")
+  body      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  thread    DiscussionThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  author    User             @relation("ReplyAuthor", fields: [authorId], references: [id])
+  upvotes   ReplyUpvote[]
+
+  @@index([threadId])
+  @@map("discussion_replies")
+}
+
+model ThreadUpvote {
+  id       String @id @default(uuid())
+  threadId String @map("thread_id")
+  userId   String @map("user_id")
+
+  thread   DiscussionThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  user     User             @relation("ThreadUpvoter", fields: [userId], references: [id])
+
+  @@unique([threadId, userId])
+  @@map("thread_upvotes")
+}
+
+model ReplyUpvote {
+  id      String @id @default(uuid())
+  replyId String @map("reply_id")
+  userId  String @map("user_id")
+
+  reply   DiscussionReply @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  user    User            @relation("ReplyUpvoter", fields: [userId], references: [id])
+
+  @@unique([replyId, userId])
+  @@map("reply_upvotes")
 }
 
 // ─── Notifications ───────────────────────────────────
